@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
 class SouraListDialog extends StatelessWidget {
-  final Map<String, int> sourates;
+  final Map<String, List<int>> sourates;
   final Function(String sourateName, int pageIndex) onSouraSelected;
 
   const SouraListDialog({
-    Key? key,
+    super.key,
     required this.sourates,
     required this.onSouraSelected,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +32,7 @@ class SouraListDialog extends StatelessWidget {
                   style: const TextStyle(fontSize: 18.0),
                 ),
                 onTap: () {
-                  int pageIndex = sourates[sourateName]! - 1;
+                  int pageIndex = sourates[sourateName]![0] - 1; // Corrected to access the start page from the list
                   onSouraSelected(sourateName, pageIndex);
                   Navigator.of(context).pop(); // Fermer la boîte de dialogue
                 },

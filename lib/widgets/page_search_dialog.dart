@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 void showPageSearchDialog(
     BuildContext context, int totalPages, Function(int) onPageSelected) {
-  TextEditingController _pageController = TextEditingController();
+  TextEditingController pageController = TextEditingController();
 
   showDialog(
     context: context,
@@ -18,7 +18,7 @@ void showPageSearchDialog(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
-                controller: _pageController,
+                controller: pageController,
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
                   labelText: 'ادخل رقم الصفحة',
@@ -32,7 +32,7 @@ void showPageSearchDialog(
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
-                        int? pageNumber = int.tryParse(_pageController.text);
+                        int? pageNumber = int.tryParse(pageController.text);
                         if (pageNumber != null &&
                             pageNumber > 0 &&
                             pageNumber <= totalPages) {

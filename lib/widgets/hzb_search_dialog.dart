@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 
 class HizbSearchDialog extends StatelessWidget {
-  final Map<int, int> ahzab; // Map contenant les numéros des Hizbs et les pages correspondantes
+  final Map<int, List<int>> ahzab; // Map contenant les numéros des Hizbs et les pages correspondantes
   final Function(int page) onPageSelected; // Callback pour retourner la page sélectionnée
   final Function(int hizb) onHizbUpdated; // Callback pour mettre à jour le Hizb actuel
 
   const HizbSearchDialog({
-    Key? key,
+    super.key,
     required this.ahzab,
     required this.onPageSelected,
     required this.onHizbUpdated,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +34,7 @@ class HizbSearchDialog extends StatelessWidget {
                   style: const TextStyle(fontSize: 18.0),
                 ),
                 onTap: () {
-                  int pageIndex = ahzab[hizbNumber]! - 1;
+                  int pageIndex = ahzab[hizbNumber]![0] - 1;
                   onPageSelected(pageIndex); // Appelle le callback avec la page
                   onHizbUpdated(hizbNumber); // Met à jour le Hizb actuel
                   Navigator.of(context).pop(); // Ferme la boîte de dialogue
