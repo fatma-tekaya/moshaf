@@ -1,24 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:moshaf/utils/colors.dart';
 
 class HizbSearchDialog extends StatelessWidget {
   final Map<int, List<int>> ahzab; // Map contenant les numéros des Hizbs et les pages correspondantes
   final Function(int page) onPageSelected; // Callback pour retourner la page sélectionnée
   final Function(int hizb) onHizbUpdated; // Callback pour mettre à jour le Hizb actuel
-
+  final bool isNightMode;
   const HizbSearchDialog({
-    super.key,
+    Key? key,
     required this.ahzab,
     required this.onPageSelected,
     required this.onHizbUpdated,
-  });
+    required this.isNightMode,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text(
-        'اختر الحزب',
-        textAlign: TextAlign.center,
-      ),
+      backgroundColor: isNightMode ? Colors.black : AppColors.cardBackground,
+      // title: const Text(
+      //   'اختر الحزب',
+      //   textAlign: TextAlign.center,
+      // ),
       content: Directionality(
         textDirection: TextDirection.rtl,
         child: SizedBox(
@@ -31,7 +34,10 @@ class HizbSearchDialog extends StatelessWidget {
               return ListTile(
                 title: Text(
                   'الحزب $hizbNumber',
-                  style: const TextStyle(fontSize: 18.0),
+                  style: TextStyle(fontSize: 20.0, color: isNightMode
+                        ? Colors.white
+                        : AppColors.primary, // Change le texte
+                  ),
                 ),
                 onTap: () {
                   int pageIndex = ahzab[hizbNumber]![0] - 1;
@@ -47,7 +53,12 @@ class HizbSearchDialog extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('إلغاء'),
+          child: Text('إلغاء',style: TextStyle(
+              fontSize: 20.0,
+              color: isNightMode
+                  ? Colors.white
+                  : AppColors.primary, // Change le texte
+            ),),
         ),
       ],
     );

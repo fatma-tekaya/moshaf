@@ -1,16 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:moshaf/utils/colors.dart';
 
 void showPageSearchDialog(
-    BuildContext context, int totalPages, Function(int) onPageSelected) {
+    BuildContext context,int totalPages ,Function(int) onPageSelected, bool isNightMode) {
   TextEditingController pageController = TextEditingController();
 
   showDialog(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: const Text(
+        backgroundColor: AppColors.textSecondary,
+        title: Text(
           'الانتقال الى الصفحة',
           textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 25.0,
+            color: isNightMode ? AppColors.textPrimary : AppColors.primary,
+          ),
         ),
         content: Directionality(
           textDirection: TextDirection.rtl,
@@ -20,9 +26,31 @@ void showPageSearchDialog(
               TextField(
                 controller: pageController,
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'ادخل رقم الصفحة',
-                  border: OutlineInputBorder(),
+                  labelStyle: TextStyle(
+                    fontSize: 20.0,
+                    color: AppColors.TextInput,
+                  ),
+                  border: const OutlineInputBorder(),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: isNightMode
+                          ? AppColors.textPrimary
+                          : AppColors.primary,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: isNightMode
+                          ? AppColors.textPrimary
+                          : AppColors.primary,
+                    ),
+                  ),
+                ),
+                style: TextStyle(
+                  fontSize: 20.0,
+                  color: isNightMode ? AppColors.textPrimary : AppColors.primary,
                 ),
               ),
               const SizedBox(height: 16.0),
@@ -31,30 +59,58 @@ void showPageSearchDialog(
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: isNightMode
+                            ? AppColors.textPrimary
+                            : AppColors.primary,
+                      ),
                       onPressed: () {
                         int? pageNumber = int.tryParse(pageController.text);
-                        if (pageNumber != null &&
-                            pageNumber > 0 &&
-                            pageNumber <= totalPages) {
-                          onPageSelected(totalPages - pageNumber);
+                        if (pageNumber != null && pageNumber > 0 &&  pageNumber <totalPages ) {
+                          onPageSelected(pageNumber-1);
                           Navigator.of(context).pop();
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('رقم الصفحة غير موجود'),
+                            SnackBar(
+                              content: Text(
+                                'رقم الصفحة غير صالح',
+                                style: TextStyle(
+                                  color:
+                                      isNightMode ? AppColors.textPrimary : AppColors.textSecondary,
+                                ),
+                              ),
+                              backgroundColor:
+                                  isNightMode ?  AppColors.textSecondary:AppColors.textPrimary ,
                             ),
                           );
                         }
                       },
-                      child: const Text('بحث'),
+                      child: Text(
+                        'بحث',
+                        style: TextStyle(
+                          fontSize: 20.0,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 8.0),
                   SizedBox(
                     width: double.infinity,
                     child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(
+                          color: isNightMode ? AppColors.textPrimary : AppColors.primary,
+                        ),
+                      ),
                       onPressed: () => Navigator.of(context).pop(),
-                      child: const Text('إلغاء'),
+                      child: Text(
+                        'إلغاء',
+                        style: TextStyle(
+                           fontSize: 20.0,
+                          color: isNightMode ? AppColors.textPrimary : AppColors.primary,
+                        ),
+                      ),
                     ),
                   ),
                 ],

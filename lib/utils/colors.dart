@@ -12,6 +12,8 @@ class AppColors {
   // Couleurs du texte
   static const Color textPrimary = Colors.black87;
   static const Color textSecondary = Colors.white;
+    static const Color TextInput= Colors.grey;
+
 
 
 }

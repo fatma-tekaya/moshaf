@@ -24,7 +24,7 @@ class _PdfHomePageState extends State<PdfHomePage> {
   int? _savedPage; // Page sauvegardée
   bool _isBookmarked = false; // État du marque-page
   String _pdfPath = "";
-  int _totalPages = 0;
+  int _totalPages = 604;
   int _currentPage = 0;
   String _currentSourate = "الفاتحة";
   int _currentHizb = 1;
@@ -42,9 +42,7 @@ class _PdfHomePageState extends State<PdfHomePage> {
 
   Future<void> _loadPdf() async {
     final prefs = await SharedPreferences.getInstance();
-    _savedPage =
-        prefs.getInt('savedPage'); // Récupération de la page sauvegardée
-    print("Page sauvegardée récupérée $_savedPage");
+    _savedPage = prefs.getInt('savedPage'); // Récupération de la page sauvegardée
     final pdfFile = await _copyPdfFromAssets();
     setState(() {
       _pdfPath = pdfFile.path;
@@ -53,11 +51,11 @@ class _PdfHomePageState extends State<PdfHomePage> {
 
   Future<File> _copyPdfFromAssets() async {
     final dir = await getTemporaryDirectory();
-    final file = File("${dir.path}/Qaloun13v2.pdf");
+    final file = File("${dir.path}/QualounVF.pdf");
 
     if (!await file.exists()) {
       final byteData =
-          await DefaultAssetBundle.of(context).load("assets/Qaloun13v2.pdf");
+          await DefaultAssetBundle.of(context).load("assets/QualounVF.pdf");
       final bytes = byteData.buffer.asUint8List();
       await file.writeAsBytes(bytes, flush: true);
     }
@@ -108,11 +106,16 @@ class _PdfHomePageState extends State<PdfHomePage> {
                               Colors.transparent, BlendMode.color),
                       child: PDFView(
                         filePath: _pdfPath,
+                        //defaultPage: 0,
                         swipeHorizontal: true,
                         onRender: (pages) {
                           setState(() {
                             _totalPages = pages!;
-                            _currentPage = _totalPages - 1;
+                            if (_savedPage != null) {
+                              _currentPage = _savedPage!;
+                            } else {
+                              _currentPage = 0;
+                            }
                           });
                           _pdfViewController?.setPage(_currentPage);
                         },
@@ -130,7 +133,8 @@ class _PdfHomePageState extends State<PdfHomePage> {
                         },
                         onPageChanged: (current, total) {
                           setState(() {
-                            _currentPage = total! - current! - 1;
+                           // _currentPage = total! - current! - 1;
+                            _currentPage = current!;
                           });
                           _syncCurrentPage(_currentPage);
                         },
@@ -160,6 +164,7 @@ class _PdfHomePageState extends State<PdfHomePage> {
                             });
                             _syncCurrentPage(pageIndex);
                           },
+                          isNightMode: _isNightMode,
                         );
                       },
                     );
@@ -183,6 +188,7 @@ class _PdfHomePageState extends State<PdfHomePage> {
                         _currentPage = page;
                       });
                     },
+                    _isNightMode,
                   ),
                   child: Text(
                     '${_currentPage + 1}',
@@ -212,6 +218,7 @@ class _PdfHomePageState extends State<PdfHomePage> {
                             });
                             _syncCurrentPage(_currentPage);
                           },
+                          isNightMode: _isNightMode,
                         );
                       },
                     );
@@ -236,8 +243,6 @@ class _PdfHomePageState extends State<PdfHomePage> {
   void _syncCurrentPage(int currentPage) {
     String? currentSoura;
     int? currentHizb;
-
-    print("pageeeeeeeee: $currentPage");
     // Vérifiez si la page actuelle est sauvegardée
     setState(() {
       _isBookmarked = (_savedPage == currentPage);
@@ -247,10 +252,8 @@ class _PdfHomePageState extends State<PdfHomePage> {
       String name = entry.key;
       List<int> range = entry.value;
       if (currentPage >= range[0] - 1 && currentPage <= range[1] - 1) {
-        print("name: $name");
         currentSoura = name;
-        print("curent name: $currentSoura");
-        break; 
+        break;
       }
     }
 
@@ -259,10 +262,7 @@ class _PdfHomePageState extends State<PdfHomePage> {
       int hizb = entry.key;
       List<int> range = entry.value;
       if (currentPage >= range[0] - 1 && currentPage <= range[1] - 1) {
-        print("hizb: $hizb");
         currentHizb = hizb;
-        print("current Hizb: $currentHizb");
-
         break;
       }
     }
@@ -272,26 +272,23 @@ class _PdfHomePageState extends State<PdfHomePage> {
       if (currentSoura != null) _currentSourate = currentSoura;
       if (currentHizb != null) _currentHizb = currentHizb;
     });
-
-    print(
-        "Sourate actuelle : $_currentSourate, Page : $currentPage, Hizb : $_currentHizb");
   }
 
   void _toggleBookmark() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       if (_isBookmarked) {
-        _savedPage = null; 
+        _savedPage = null;
       } else {
-        _savedPage = _currentPage; 
+        _savedPage = _currentPage;
       }
       _isBookmarked = !_isBookmarked;
     });
 
     if (_savedPage != null) {
-      await prefs.setInt('savedPage', _savedPage!); 
+      await prefs.setInt('savedPage', _savedPage!);
     } else {
-      await prefs.remove('savedPage'); 
+      await prefs.remove('savedPage');
     }
   }
 }
