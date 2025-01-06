@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:moshaf/utils/colors.dart';
 
-void showPageSearchDialog(
-    BuildContext context,int totalPages ,Function(int) onPageSelected, bool isNightMode) {
+void showPageSearchDialog(BuildContext context, int totalPages,
+    Function(int) onPageSelected, bool isNightMode) {
   TextEditingController pageController = TextEditingController();
 
   showDialog(
@@ -35,6 +35,7 @@ void showPageSearchDialog(
                   border: const OutlineInputBorder(),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(
+                      //width: 2.0,
                       color: isNightMode
                           ? AppColors.textPrimary
                           : AppColors.primary,
@@ -50,7 +51,8 @@ void showPageSearchDialog(
                 ),
                 style: TextStyle(
                   fontSize: 20.0,
-                  color: isNightMode ? AppColors.textPrimary : AppColors.primary,
+                  color:
+                      isNightMode ? AppColors.textPrimary : AppColors.primary,
                 ),
               ),
               const SizedBox(height: 16.0),
@@ -62,12 +64,14 @@ void showPageSearchDialog(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: isNightMode
                             ? AppColors.textPrimary
-                            : AppColors.primary,
+                            : AppColors.cardBackground,
                       ),
                       onPressed: () {
                         int? pageNumber = int.tryParse(pageController.text);
-                        if (pageNumber != null && pageNumber > 0 &&  pageNumber <totalPages ) {
-                          onPageSelected(pageNumber-1);
+                        if (pageNumber != null &&
+                            pageNumber > 0 &&
+                            pageNumber <= totalPages) {
+                          onPageSelected(pageNumber - 1);
                           Navigator.of(context).pop();
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -75,21 +79,23 @@ void showPageSearchDialog(
                               content: Text(
                                 'رقم الصفحة غير صالح',
                                 style: TextStyle(
-                                  color:
-                                      isNightMode ? AppColors.textPrimary : AppColors.textSecondary,
+                                  color: AppColors.textSecondary,
                                 ),
                               ),
-                              backgroundColor:
-                                  isNightMode ?  AppColors.textSecondary:AppColors.textPrimary ,
+                              backgroundColor: isNightMode
+                                  ? AppColors.textPrimary
+                                  : AppColors.primary,
                             ),
                           );
                         }
                       },
                       child: Text(
-                        'بحث',
+                        'إنتقال',
                         style: TextStyle(
                           fontSize: 20.0,
-                          color: AppColors.textSecondary,
+                          color: isNightMode
+                              ? AppColors.textSecondary
+                              : AppColors.primary,
                         ),
                       ),
                     ),
@@ -99,16 +105,23 @@ void showPageSearchDialog(
                     width: double.infinity,
                     child: OutlinedButton(
                       style: OutlinedButton.styleFrom(
+                        backgroundColor: isNightMode
+                            ? AppColors.textSecondary
+                            : AppColors.primary,
                         side: BorderSide(
-                          color: isNightMode ? AppColors.textPrimary : AppColors.primary,
+                          color: isNightMode
+                              ? AppColors.textPrimary
+                              : AppColors.primary,
                         ),
                       ),
                       onPressed: () => Navigator.of(context).pop(),
                       child: Text(
                         'إلغاء',
                         style: TextStyle(
-                           fontSize: 20.0,
-                          color: isNightMode ? AppColors.textPrimary : AppColors.primary,
+                          fontSize: 20.0,
+                          color: isNightMode
+                              ? AppColors.textPrimary
+                              : AppColors.cardBackground,
                         ),
                       ),
                     ),

@@ -32,18 +32,10 @@ class CustomDrawer extends StatelessWidget {
                     Flexible(
                       child: Image.asset(
                         'assets/logo1.png',
-                        fit: BoxFit.contain, // S'adapte à l'espace disponible
+                        fit: BoxFit.contain,
                       ),
                     ),
                     const SizedBox(height: 10),
-                    const Text(
-                      'المصحف الشريف',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
                   ],
                 ),
               ),
@@ -52,27 +44,38 @@ class CustomDrawer extends StatelessWidget {
             ListTile(
               leading: Icon(
                 Icons.nightlight_round,
-                color: isNightMode ? AppColors.textPrimary : AppColors.textSecondary,
+                color: isNightMode
+                    ? AppColors.textPrimary
+                    : AppColors.textSecondary,
               ),
               title: Text(
                 'تبديل الوضع الليلي',
                 style: TextStyle(
-                  color: isNightMode ? AppColors.textPrimary: AppColors.textSecondary,
+                  color: isNightMode
+                      ? AppColors.textPrimary
+                      : AppColors.textSecondary,
                 ),
               ),
               onTap: onToggleNightMode,
             ),
-            const Divider(color: AppColors.textSecondary),
+            Divider(
+                color: isNightMode
+                    ? AppColors.textPrimary
+                    : AppColors.textSecondary),
             // À propos
             ListTile(
               leading: Icon(
                 Icons.info,
-                color: isNightMode ? AppColors.textPrimary : AppColors.textSecondary,
+                color: isNightMode
+                    ? AppColors.textPrimary
+                    : AppColors.textSecondary,
               ),
               title: Text(
                 'حول التطبيق',
                 style: TextStyle(
-                  color: isNightMode ? AppColors.textPrimary : AppColors.textSecondary,
+                  color: isNightMode
+                      ? AppColors.textPrimary
+                      : AppColors.textSecondary,
                 ),
               ),
               onTap: () {
@@ -83,12 +86,16 @@ class CustomDrawer extends StatelessWidget {
             ListTile(
               leading: Icon(
                 Icons.mail,
-                color: isNightMode ? AppColors.textPrimary : AppColors.textSecondary,
+                color: isNightMode
+                    ? AppColors.textPrimary
+                    : AppColors.textSecondary,
               ),
               title: Text(
                 'تواصل معنا',
                 style: TextStyle(
-                  color: isNightMode ? AppColors.textPrimary : AppColors.textSecondary,
+                  color: isNightMode
+                      ? AppColors.textPrimary
+                      : AppColors.textSecondary,
                 ),
               ),
               onTap: () {

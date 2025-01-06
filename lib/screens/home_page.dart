@@ -21,8 +21,8 @@ class PdfHomePage extends StatefulWidget {
 }
 
 class _PdfHomePageState extends State<PdfHomePage> {
-  int? _savedPage; // Page sauvegardée
-  bool _isBookmarked = false; // État du marque-page
+  int? _savedPage; 
+  bool _isBookmarked = false;
   String _pdfPath = "";
   int _totalPages = 604;
   int _currentPage = 0;
@@ -42,20 +42,26 @@ class _PdfHomePageState extends State<PdfHomePage> {
 
   Future<void> _loadPdf() async {
     final prefs = await SharedPreferences.getInstance();
-    _savedPage = prefs.getInt('savedPage'); // Récupération de la page sauvegardée
+    _savedPage = prefs.getInt('savedPage'); 
     final pdfFile = await _copyPdfFromAssets();
     setState(() {
       _pdfPath = pdfFile.path;
+      if (_savedPage != null) {
+      _currentPage = _savedPage!;
+      _isBookmarked = true;
+    } else {
+      _currentPage = _totalPages; 
+    }
     });
   }
 
   Future<File> _copyPdfFromAssets() async {
     final dir = await getTemporaryDirectory();
-    final file = File("${dir.path}/QualounVF.pdf");
+    final file = File("${dir.path}/qualounn.pdf");
 
     if (!await file.exists()) {
       final byteData =
-          await DefaultAssetBundle.of(context).load("assets/QualounVF.pdf");
+          await DefaultAssetBundle.of(context).load("assets/qualounn.pdf");
       final bytes = byteData.buffer.asUint8List();
       await file.writeAsBytes(bytes, flush: true);
     }
@@ -70,12 +76,12 @@ class _PdfHomePageState extends State<PdfHomePage> {
       appBar: CustomAppBar(
         onThemeChanged: () {
           setState(() {
-            _isNightMode = !_isNightMode; // Bascule entre mode jour et nuit
+            _isNightMode = !_isNightMode; 
           });
         },
-        isNightMode: _isNightMode, // Passez l'état du mode nuit ici
+        isNightMode: _isNightMode, 
         onBookmarkPressed:
-            _toggleBookmark, // Ajout du comportement du marque-page
+            _toggleBookmark,
         isBookmarked: _isBookmarked,
         scaffoldKey: _scaffoldKey,
       ),
@@ -106,25 +112,29 @@ class _PdfHomePageState extends State<PdfHomePage> {
                               Colors.transparent, BlendMode.color),
                       child: PDFView(
                         filePath: _pdfPath,
-                        //defaultPage: 0,
                         swipeHorizontal: true,
                         onRender: (pages) {
                           setState(() {
                             _totalPages = pages!;
                             if (_savedPage != null) {
                               _currentPage = _savedPage!;
+                              print("saved page not null $_savedPage");
+                              _pdfViewController?.setPage(_totalPages - _currentPage - 1);
                             } else {
-                              _currentPage = 0;
+                              //_currentPage = 0;
+                              _currentPage = _totalPages;
+                              _pdfViewController?.setPage(_currentPage);
                             }
+                            print("on render $_currentPage");
                           });
-                          _pdfViewController?.setPage(_currentPage);
                         },
                         onViewCreated: (controller) {
                           _pdfViewController = controller;
-                          // Naviguez à la page sauvegardée si elle existe
-
                           if (_savedPage != null) {
-                            controller.setPage(_savedPage!);
+                             print("on view created $_savedPage et $_isBookmarked");
+                            int physicalPage = _totalPages - _savedPage! - 1;
+                            print("test $physicalPage");
+                            controller.setPage(physicalPage);
                             setState(() {
                               _currentPage = _savedPage!;
                               _isBookmarked = true;
@@ -133,10 +143,10 @@ class _PdfHomePageState extends State<PdfHomePage> {
                         },
                         onPageChanged: (current, total) {
                           setState(() {
-                           // _currentPage = total! - current! - 1;
-                            _currentPage = current!;
+                           _currentPage = total! - current! - 1;
                           });
                           _syncCurrentPage(_currentPage);
+                          print("on page changed $_currentPage");
                         },
                       ),
                     ),
@@ -157,11 +167,12 @@ class _PdfHomePageState extends State<PdfHomePage> {
                         return SouraListDialog(
                           sourates: _sourates,
                           onSouraSelected: (sourateName, pageIndex) {
-                            _pdfViewController?.setPage(pageIndex);
+                            _pdfViewController?.setPage(_totalPages - pageIndex - 1);
                             setState(() {
                               _currentPage = pageIndex;
                               _currentSourate = sourateName;
                             });
+                            print("soura search $_currentPage");
                             _syncCurrentPage(pageIndex);
                           },
                           isNightMode: _isNightMode,
@@ -183,9 +194,10 @@ class _PdfHomePageState extends State<PdfHomePage> {
                     context,
                     _totalPages,
                     (page) {
-                      _pdfViewController?.setPage(page);
+                      _pdfViewController?.setPage(_totalPages - page - 1);
                       setState(() {
                         _currentPage = page;
+                        print("page searched $_currentPage");
                       });
                     },
                     _isNightMode,
@@ -207,9 +219,10 @@ class _PdfHomePageState extends State<PdfHomePage> {
                         return HizbSearchDialog(
                           ahzab: _ahzab,
                           onPageSelected: (page) {
-                            _pdfViewController?.setPage(page);
+                            _pdfViewController?.setPage(_totalPages - page - 1);
                             setState(() {
                               _currentPage = page;
+                              print("hzb searched $_currentPage");
                             });
                           },
                           onHizbUpdated: (hizb) {
@@ -243,11 +256,10 @@ class _PdfHomePageState extends State<PdfHomePage> {
   void _syncCurrentPage(int currentPage) {
     String? currentSoura;
     int? currentHizb;
-    // Vérifiez si la page actuelle est sauvegardée
     setState(() {
       _isBookmarked = (_savedPage == currentPage);
+      print("this book marked $_isBookmarked");
     });
-    // Trouver la sourate correspondant à la page actuelle
     for (var entry in _sourates.entries) {
       String name = entry.key;
       List<int> range = entry.value;
@@ -257,7 +269,6 @@ class _PdfHomePageState extends State<PdfHomePage> {
       }
     }
 
-    // Trouver le hizb correspondant à la page actuelle
     for (var entry in _ahzab.entries) {
       int hizb = entry.key;
       List<int> range = entry.value;
@@ -266,7 +277,6 @@ class _PdfHomePageState extends State<PdfHomePage> {
         break;
       }
     }
-
     setState(() {
       // Si une correspondance est trouvée, mettez à jour, sinon conservez les valeurs actuelles
       if (currentSoura != null) _currentSourate = currentSoura;

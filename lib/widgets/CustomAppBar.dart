@@ -6,7 +6,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback onBookmarkPressed;
   final bool isNightMode;
   final bool isBookmarked;
-  final GlobalKey<ScaffoldState> scaffoldKey; 
+  final GlobalKey<ScaffoldState> scaffoldKey;
 
   const CustomAppBar({
     super.key,
@@ -20,21 +20,22 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return Directionality(
-      textDirection: TextDirection.rtl, 
+      textDirection: TextDirection.rtl,
       child: AppBar(
-       backgroundColor: isNightMode ? AppColors.textPrimary : AppColors.textSecondary,
+        backgroundColor:
+            isNightMode ? AppColors.textPrimary : AppColors.textSecondary,
         leading: IconButton(
           icon: const Icon(Icons.menu),
-          color:  isNightMode ? AppColors.textSecondary : AppColors.primary,
+          color: isNightMode ? AppColors.textSecondary : AppColors.primary,
           onPressed: () {
-            scaffoldKey.currentState?.openDrawer(); 
+            scaffoldKey.currentState?.openDrawer();
           },
         ),
         actions: [
           IconButton(
             icon: Icon(
               isBookmarked ? Icons.bookmark : Icons.bookmark_border,
-              color:  isNightMode ? AppColors.textSecondary : AppColors.primary,
+              color: isNightMode ? AppColors.textSecondary : AppColors.primary,
             ),
             onPressed: onBookmarkPressed,
           ),
