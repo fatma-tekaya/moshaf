@@ -58,10 +58,11 @@ class HizbSearchDialog extends StatelessWidget {
                               int hizbNumber = ahzab.keys.elementAt(index);
                               return ListTile(
                                 title: Text(
-                                  'الحزب $hizbNumber',
+                                  'الحِزب $hizbNumber',
                                   textAlign: TextAlign.center, 
                                   style: TextStyle(
-                                    fontSize: 25.0,
+                                    fontSize:  MediaQuery.of(context).size.width * 0.06,
+                                    fontFamily: 'almushaf',
                                     color: isNightMode
                                         ? Colors.white
                                         : AppColors.primary,
@@ -92,7 +93,7 @@ class HizbSearchDialog extends StatelessWidget {
                             child: Text(
                               'إلغاء',
                               style: TextStyle(
-                                fontSize: 20.0,
+                                fontSize: MediaQuery.of(context).size.width * 0.06,
                                 color: isNightMode
                                     ? Colors.black
                                     : AppColors.cardBackground,

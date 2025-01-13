@@ -34,7 +34,6 @@ dependencies:
     sdk: flutter
   flutter_pdfview: ^1.3.2
   path_provider: ^2.0.11
-  flutter_tesseract_ocr: ^0.4.28
   image: ^4.0.15
   flutter_native_splash: ^2.4.3
   shared_preferences: ^2.3.4
@@ -78,7 +77,6 @@ flutter:
   assets:
     - assets/
     - assets/splash.png
-    - assets/img1.jpg
     - assets/tessdata_config.json
     - assets/tessdata/ara.traineddata
   #   - images/a_dot_ham.jpeg
@@ -109,6 +107,10 @@ flutter:
           weight: 400
         - asset: assets/fonts/Lateef-SemiBold.ttf
           weight: 600
+    - family: almushaf
+      fonts:
+        - asset: assets/fonts/almushaf.ttf
+          weight: 700
   #         style: italic
     # - family: Trajan Pro
     #   fonts:

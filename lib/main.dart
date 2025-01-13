@@ -30,12 +30,12 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       title: 'المصحف الشريف',
       theme: ThemeData(
-        fontFamily: 'Lateef',
+        fontFamily: 'almushaf',
         colorScheme: ColorScheme.light(
           primary: AppColors.primary,
-          background: Colors.white,
+          surface: Colors.white,
           onPrimary: Colors.white,
-          onBackground: Colors.black,
+          onSurface: Colors.black,
         ),
         appBarTheme: AppBarTheme(
           backgroundColor: AppColors.primary,
@@ -44,11 +44,12 @@ class _MyAppState extends State<MyApp> {
         useMaterial3: true,
       ),
       darkTheme: ThemeData(
-        colorScheme: ColorScheme.dark(
+        scaffoldBackgroundColor: AppColors.textPrimary,
+        colorScheme: const ColorScheme.dark(
           primary: AppColors.primary,
-          background: Colors.black,
+          surface: Colors.black,
           onPrimary: Colors.black,
-          onBackground: Colors.white,
+          onSurface: Colors.white,
         ),
         appBarTheme: const AppBarTheme(
           backgroundColor: Colors.black,

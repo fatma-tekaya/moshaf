@@ -14,7 +14,7 @@ void showPageSearchDialog(BuildContext context, int totalPages,
           'الانتقال الى الصفحة',
           textAlign: TextAlign.center,
           style: TextStyle(
-            fontSize: 25.0,
+            fontSize:  MediaQuery.of(context).size.width * 0.05,
             color: isNightMode ? AppColors.textPrimary : AppColors.primary,
           ),
         ),
@@ -29,7 +29,7 @@ void showPageSearchDialog(BuildContext context, int totalPages,
                 decoration: InputDecoration(
                   labelText: 'ادخل رقم الصفحة',
                   labelStyle: TextStyle(
-                    fontSize: 20.0,
+                    fontSize:  MediaQuery.of(context).size.width * 0.05,
                     color: AppColors.TextInput,
                   ),
                   border: const OutlineInputBorder(),
@@ -50,7 +50,7 @@ void showPageSearchDialog(BuildContext context, int totalPages,
                   ),
                 ),
                 style: TextStyle(
-                  fontSize: 20.0,
+                  fontSize:  MediaQuery.of(context).size.width * 0.05,
                   color:
                       isNightMode ? AppColors.textPrimary : AppColors.primary,
                 ),
@@ -92,7 +92,7 @@ void showPageSearchDialog(BuildContext context, int totalPages,
                       child: Text(
                         'إنتقال',
                         style: TextStyle(
-                          fontSize: 20.0,
+                          fontSize:  MediaQuery.of(context).size.width * 0.05,
                           color: isNightMode
                               ? AppColors.textSecondary
                               : AppColors.primary,
@@ -118,7 +118,7 @@ void showPageSearchDialog(BuildContext context, int totalPages,
                       child: Text(
                         'إلغاء',
                         style: TextStyle(
-                          fontSize: 20.0,
+                          fontSize:  MediaQuery.of(context).size.width * 0.05,
                           color: isNightMode
                               ? AppColors.textPrimary
                               : AppColors.cardBackground,

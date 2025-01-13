@@ -58,9 +58,11 @@ class SouraListDialog extends StatelessWidget {
                               return ListTile(
                                 title: Text(
                                   "سورة $sourateName",
+                                  
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                    fontSize: 25.0,
+                                    fontSize:  MediaQuery.of(context).size.width * 0.06,
+                                    fontFamily: 'almushaf',
                                     color: isNightMode
                                         ? Colors.white
                                         : AppColors.primary,
@@ -90,7 +92,7 @@ class SouraListDialog extends StatelessWidget {
                             child: Text(
                               'إلغاء',
                               style: TextStyle(
-                                fontSize: 20.0,
+                                fontSize: MediaQuery.of(context).size.width * 0.06,
                                 color: isNightMode
                                     ? Colors.black
                                     : AppColors.cardBackground,

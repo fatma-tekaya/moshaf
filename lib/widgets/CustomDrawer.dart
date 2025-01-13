@@ -15,92 +15,92 @@ class CustomDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       child: Container(
-        color: isNightMode ? AppColors.textSecondary : AppColors.cardBackground,
-        child: ListView(
-          padding: EdgeInsets.zero,
+        color: isNightMode ? AppColors.textPrimary : AppColors.sidBarBackground,
+        child: Column(
           children: [
-            // Header du Drawer
+            // Drawer Header avec image en arrière-plan
             DrawerHeader(
               decoration: BoxDecoration(
-                color: isNightMode ? AppColors.textPrimary : AppColors.primary,
+                image: DecorationImage(
+                  image: AssetImage('assets/Plan.png'), // Chemin de l'image
+                  fit: BoxFit.cover, // L'image occupe tout l'espace
+                ),
               ),
-              child: Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // Logo
-                    Flexible(
-                      child: Image.asset(
-                        'assets/logo1.png',
-                        fit: BoxFit.contain,
+              child: Container(), // Vide pour afficher uniquement l'image
+            ),
+            // Contenu après l'image
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0), // Espacement des côtés
+                children: [
+                  Text(
+                     'اعدادات',
+                      style: TextStyle(
+                        color: AppColors.textSecondary,
+                        fontSize: MediaQuery.of(context).size.width * 0.06, 
                       ),
                     ),
-                    const SizedBox(height: 10),
-                  ],
-                ),
+                  ListTile(
+                    leading: Icon(
+                      Icons.nightlight_round,
+                      color: AppColors.textSecondary,
+                      size: MediaQuery.of(context).size.width * 0.06,
+
+                    ),
+                    title: Text(
+                      'تبديل الوضع الليلي',
+                      style: TextStyle(
+                        color: AppColors.textSecondary,
+                        fontSize: MediaQuery.of(context).size.width * 0.05, 
+                      ),
+                    ),
+                    onTap: onToggleNightMode,
+                  ),
+                  const Divider(thickness: 1.5, color: AppColors.textSecondary,), // Ligne de séparation épaisse
+                 Text(
+                      'حول التطبيقة',
+                      style: TextStyle(
+                        color:  AppColors.textSecondary,
+                        fontSize: MediaQuery.of(context).size.width * 0.06,
+                      ),
+                    ),
+                  ListTile(
+                    leading: Icon(
+                      Icons.book_outlined,
+                      color:  AppColors.textSecondary,
+                      size: MediaQuery.of(context).size.width * 0.06,
+                    ),
+                    title: Text(
+                      'اعمالنا',
+                      style: TextStyle(
+                        color: AppColors.textSecondary,
+                        fontSize: MediaQuery.of(context).size.width * 0.05,
+                      ),
+                    ),
+                    onTap: () {
+                      // Action pour "اعداداتنا"
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(
+                      Icons.share,
+                      color: AppColors.textSecondary,
+                      size: MediaQuery.of(context).size.width * 0.06,
+
+                    ),
+                    title: Text(
+                      'تواصل معنا',
+                      style: TextStyle(
+                        color: AppColors.textSecondary,
+                        fontSize: MediaQuery.of(context).size.width * 0.05,
+                      ),
+                    ),
+                    onTap: () {
+                      // Action pour "تواصل معنا"
+                    },
+                  ),
+                ],
               ),
-            ),
-            // Changement du mode nuit
-            ListTile(
-              leading: Icon(
-                Icons.nightlight_round,
-                color: isNightMode
-                    ? AppColors.textPrimary
-                    : AppColors.textSecondary,
-              ),
-              title: Text(
-                'تبديل الوضع الليلي',
-                style: TextStyle(
-                  color: isNightMode
-                      ? AppColors.textPrimary
-                      : AppColors.textSecondary,
-                ),
-              ),
-              onTap: onToggleNightMode,
-            ),
-            Divider(
-                color: isNightMode
-                    ? AppColors.textPrimary
-                    : AppColors.textSecondary),
-            // À propos
-            ListTile(
-              leading: Icon(
-                Icons.info,
-                color: isNightMode
-                    ? AppColors.textPrimary
-                    : AppColors.textSecondary,
-              ),
-              title: Text(
-                'حول التطبيق',
-                style: TextStyle(
-                  color: isNightMode
-                      ? AppColors.textPrimary
-                      : AppColors.textSecondary,
-                ),
-              ),
-              onTap: () {
-                // Action pour "حول التطبيق"
-              },
-            ),
-            // Contact
-            ListTile(
-              leading: Icon(
-                Icons.mail,
-                color: isNightMode
-                    ? AppColors.textPrimary
-                    : AppColors.textSecondary,
-              ),
-              title: Text(
-                'تواصل معنا',
-                style: TextStyle(
-                  color: isNightMode
-                      ? AppColors.textPrimary
-                      : AppColors.textSecondary,
-                ),
-              ),
-              onTap: () {
-                // Action pour "تواصل معنا"
-              },
             ),
           ],
         ),

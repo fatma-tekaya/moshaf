@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
-import '../screens/ocr.dart';
 import '../widgets/page_search_dialog.dart';
 import '../widgets/CustomAppBar.dart';
 import '../widgets/CustomDrawer.dart';
@@ -118,22 +117,19 @@ class _PdfHomePageState extends State<PdfHomePage> {
                             _totalPages = pages!;
                             if (_savedPage != null) {
                               _currentPage = _savedPage!;
-                              print("saved page not null $_savedPage");
+                             
                               _pdfViewController?.setPage(_totalPages - _currentPage - 1);
                             } else {
                               //_currentPage = 0;
                               _currentPage = _totalPages;
                               _pdfViewController?.setPage(_currentPage);
                             }
-                            print("on render $_currentPage");
                           });
                         },
                         onViewCreated: (controller) {
                           _pdfViewController = controller;
                           if (_savedPage != null) {
-                             print("on view created $_savedPage et $_isBookmarked");
                             int physicalPage = _totalPages - _savedPage! - 1;
-                            print("test $physicalPage");
                             controller.setPage(physicalPage);
                             setState(() {
                               _currentPage = _savedPage!;
@@ -146,14 +142,14 @@ class _PdfHomePageState extends State<PdfHomePage> {
                            _currentPage = total! - current! - 1;
                           });
                           _syncCurrentPage(_currentPage);
-                          print("on page changed $_currentPage");
+                         
                         },
                       ),
                     ),
                   ),
           ),
           Container(
-            color: _isNightMode ? Colors.black : Colors.grey[200],
+            color: _isNightMode ? AppColors.textPrimary : AppColors.textSecondary,
             padding:
                 const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
             child: Row(
@@ -172,7 +168,6 @@ class _PdfHomePageState extends State<PdfHomePage> {
                               _currentPage = pageIndex;
                               _currentSourate = sourateName;
                             });
-                            print("soura search $_currentPage");
                             _syncCurrentPage(pageIndex);
                           },
                           isNightMode: _isNightMode,
@@ -183,9 +178,9 @@ class _PdfHomePageState extends State<PdfHomePage> {
                   child: Text(
                     _currentSourate,
                     style: TextStyle(
-                      fontSize: 25.0,
+                      fontSize:MediaQuery.of(context).size.width * 0.06,
                       color: _isNightMode ? Colors.white : AppColors.primary,
-                      fontWeight: FontWeight.bold,
+                      //fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
@@ -197,7 +192,6 @@ class _PdfHomePageState extends State<PdfHomePage> {
                       _pdfViewController?.setPage(_totalPages - page - 1);
                       setState(() {
                         _currentPage = page;
-                        print("page searched $_currentPage");
                       });
                     },
                     _isNightMode,
@@ -205,7 +199,7 @@ class _PdfHomePageState extends State<PdfHomePage> {
                   child: Text(
                     '${_currentPage + 1}',
                     style: TextStyle(
-                      fontSize: 25.0,
+                      fontSize: MediaQuery.of(context).size.width * 0.07,
                       color: _isNightMode ? Colors.white : AppColors.primary,
                       decoration: TextDecoration.none,
                     ),
@@ -222,7 +216,6 @@ class _PdfHomePageState extends State<PdfHomePage> {
                             _pdfViewController?.setPage(_totalPages - page - 1);
                             setState(() {
                               _currentPage = page;
-                              print("hzb searched $_currentPage");
                             });
                           },
                           onHizbUpdated: (hizb) {
@@ -237,11 +230,11 @@ class _PdfHomePageState extends State<PdfHomePage> {
                     );
                   },
                   child: Text(
-                    'الحزب $_currentHizb',
+                    'الحِزب $_currentHizb',
                     style: TextStyle(
-                      fontSize: 25.0,
+                      fontSize: MediaQuery.of(context).size.width * 0.06,
                       color: _isNightMode ? Colors.white : AppColors.primary,
-                      fontWeight: FontWeight.bold,
+                      //fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
@@ -258,7 +251,6 @@ class _PdfHomePageState extends State<PdfHomePage> {
     int? currentHizb;
     setState(() {
       _isBookmarked = (_savedPage == currentPage);
-      print("this book marked $_isBookmarked");
     });
     for (var entry in _sourates.entries) {
       String name = entry.key;
