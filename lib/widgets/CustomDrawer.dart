@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../utils/colors.dart';
+import '../screens/splash_screen.dart';
+import '../utils/launch_Facebook.dart';
 
 class CustomDrawer extends StatelessWidget {
   final bool isNightMode;
@@ -31,54 +33,62 @@ class CustomDrawer extends StatelessWidget {
             // Contenu après l'image
             Expanded(
               child: ListView(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0), // Espacement des côtés
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0), // Espacement des côtés
                 children: [
                   Text(
-                     'اعدادات',
-                      style: TextStyle(
-                        color: AppColors.textSecondary,
-                        fontSize: MediaQuery.of(context).size.width * 0.06, 
-                      ),
+                    'اعدادات',
+                    style: TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: MediaQuery.of(context).size.width * 0.06,
                     ),
+                  ),
                   ListTile(
                     leading: Icon(
                       Icons.nightlight_round,
                       color: AppColors.textSecondary,
                       size: MediaQuery.of(context).size.width * 0.06,
-
                     ),
                     title: Text(
                       'تبديل الوضع الليلي',
                       style: TextStyle(
                         color: AppColors.textSecondary,
-                        fontSize: MediaQuery.of(context).size.width * 0.05, 
+                        fontSize: MediaQuery.of(context).size.width * 0.05,
                       ),
                     ),
                     onTap: onToggleNightMode,
                   ),
-                  const Divider(thickness: 1.5, color: AppColors.textSecondary,), // Ligne de séparation épaisse
-                 Text(
-                      'حول التطبيقة',
-                      style: TextStyle(
-                        color:  AppColors.textSecondary,
-                        fontSize: MediaQuery.of(context).size.width * 0.06,
-                      ),
+                  const Divider(
+                    thickness: 1.5,
+                    color: AppColors.textSecondary,
+                  ), // Ligne de séparation épaisse
+                  Text(
+                    'حول التطبيقة',
+                    style: TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: MediaQuery.of(context).size.width * 0.06,
                     ),
+                  ),
                   ListTile(
                     leading: Icon(
                       Icons.book_outlined,
-                      color:  AppColors.textSecondary,
+                      color: AppColors.textSecondary,
                       size: MediaQuery.of(context).size.width * 0.06,
                     ),
                     title: Text(
-                      'اعمالنا',
+                      'المؤسسات المشاركة',
                       style: TextStyle(
                         color: AppColors.textSecondary,
                         fontSize: MediaQuery.of(context).size.width * 0.05,
                       ),
                     ),
                     onTap: () {
-                      // Action pour "اعداداتنا"
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                const SplashScreen(redirectToHome: false)),
+                      );
                     },
                   ),
                   ListTile(
@@ -86,7 +96,6 @@ class CustomDrawer extends StatelessWidget {
                       Icons.share,
                       color: AppColors.textSecondary,
                       size: MediaQuery.of(context).size.width * 0.06,
-
                     ),
                     title: Text(
                       'تواصل معنا',
@@ -95,9 +104,8 @@ class CustomDrawer extends StatelessWidget {
                         fontSize: MediaQuery.of(context).size.width * 0.05,
                       ),
                     ),
-                    onTap: () {
-                      // Action pour "تواصل معنا"
-                    },
+                    onTap: () => LaunchFacebook.showFacebookChoiceDialog(
+                        context),
                   ),
                 ],
               ),

@@ -57,7 +57,7 @@ class SouraListDialog extends StatelessWidget {
                                   sourates.keys.elementAt(index);
                               return ListTile(
                                 title: Text(
-                                  "سورة $sourateName",
+                                  "${sourates.keys.toList().indexOf(sourateName) + 1}. سورة $sourateName",
                                   
                                   textAlign: TextAlign.center,
                                   style: TextStyle(

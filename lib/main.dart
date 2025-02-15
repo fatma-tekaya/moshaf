@@ -5,6 +5,7 @@ import 'screens/home_page.dart';
 import 'screens/splash_screen.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized(); 
   runApp(const MyApp());
 }
 
@@ -20,7 +21,8 @@ class _MyAppState extends State<MyApp> {
 
   void _toggleTheme() {
     setState(() {
-      _themeMode = _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
+      _themeMode =
+          _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
     });
   }
 
@@ -74,6 +76,7 @@ class _MyAppState extends State<MyApp> {
         '/home': (context) => PdfHomePage(
               onThemeChanged: _toggleTheme, // Passer le toggle au HomePage
             ),
+        
       },
     );
   }
