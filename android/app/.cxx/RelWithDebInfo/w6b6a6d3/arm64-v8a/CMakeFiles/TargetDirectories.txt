@@ -1,0 +1,2 @@
+C:/Users/octanet/Desktop/moshaf_app/moshaf/android/app/.cxx/RelWithDebInfo/w6b6a6d3/arm64-v8a/CMakeFiles/edit_cache.dir
+C:/Users/octanet/Desktop/moshaf_app/moshaf/android/app/.cxx/RelWithDebInfo/w6b6a6d3/arm64-v8a/CMakeFiles/rebuild_cache.dir

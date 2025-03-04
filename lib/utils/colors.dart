@@ -6,7 +6,7 @@ class AppColors {
   static const Color secondary = Colors.amber;
 
   // Couleurs de fond
-  static const Color cardBackground = Color(0xFFedcfad);
+  static const Color cardBackground = Color(0xFFffe3ca);
   static const Color navBackground = Color(0xFF402311);
   static const Color sidBarBackground = Color(0xFF42210b);
 

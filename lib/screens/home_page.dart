@@ -20,7 +20,7 @@ class PdfHomePage extends StatefulWidget {
 }
 
 class _PdfHomePageState extends State<PdfHomePage> {
-  int? _savedPage; 
+  int? _savedPage;
   bool _isBookmarked = false;
   String _pdfPath = "";
   int _totalPages = 604;
@@ -41,16 +41,16 @@ class _PdfHomePageState extends State<PdfHomePage> {
 
   Future<void> _loadPdf() async {
     final prefs = await SharedPreferences.getInstance();
-    _savedPage = prefs.getInt('savedPage'); 
+    _savedPage = prefs.getInt('savedPage');
     final pdfFile = await _copyPdfFromAssets();
     setState(() {
       _pdfPath = pdfFile.path;
       if (_savedPage != null) {
-      _currentPage = _savedPage!;
-      _isBookmarked = true;
-    } else {
-      _currentPage = _totalPages; 
-    }
+        _currentPage = _savedPage!;
+        _isBookmarked = true;
+      } else {
+        _currentPage = _totalPages;
+      }
     });
   }
 
@@ -71,16 +71,17 @@ class _PdfHomePageState extends State<PdfHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       key: _scaffoldKey,
       appBar: CustomAppBar(
         onThemeChanged: () {
           setState(() {
-            _isNightMode = !_isNightMode; 
+            _isNightMode = !_isNightMode;
           });
         },
-        isNightMode: _isNightMode, 
-        onBookmarkPressed:
-            _toggleBookmark,
+        context: context,
+        isNightMode: _isNightMode,
+        onBookmarkPressed: _toggleBookmark,
         isBookmarked: _isBookmarked,
         scaffoldKey: _scaffoldKey,
       ),
@@ -96,91 +97,139 @@ class _PdfHomePageState extends State<PdfHomePage> {
         children: [
           Expanded(
             child: _pdfPath.isEmpty
-                ? const Center(child: CircularProgressIndicator())
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const CircularProgressIndicator(),
+                      const SizedBox(height: 10),
+                      Text(
+                        "جارٍ تحميل الملف...",
+                        style: TextStyle(
+                          fontSize:
+                              MediaQuery.of(context).size.width * 0.05 > 22
+                                  ? MediaQuery.of(context).size.width * 0.05
+                                  : 22,
+                          color: Colors.grey[700],
+                        ),
+                      ),
+                    ],
+                  )
                 : Directionality(
                     textDirection: TextDirection.rtl,
-                    child: ColorFiltered(
-                      colorFilter: _isNightMode
-                          ? const ColorFilter.matrix(<double>[
-                              -1, 0, 0, 0, 255, // Rouge inversé
-                              0, -1, 0, 0, 255, // Vert inversé
-                              0, 0, -1, 0, 255, // Bleu inversé
-                              0, 0, 0, 1, 0, // Alpha inchangé
-                            ])
-                          : const ColorFilter.mode(
-                              Colors.transparent, BlendMode.color),
-                      child: PDFView(
-                        filePath: _pdfPath,
-                        swipeHorizontal: true,
-                        onRender: (pages) {
-                          setState(() {
-                            _totalPages = pages!;
-                            if (_savedPage != null) {
-                              _currentPage = _savedPage!;
-                             
-                              _pdfViewController?.setPage(_totalPages - _currentPage - 1);
-                            } else {
-                              //_currentPage = 0;
-                              _currentPage = _totalPages;
-                              _pdfViewController?.setPage(_currentPage);
-                            }
-                          });
-                        },
-                        onViewCreated: (controller) {
-                          _pdfViewController = controller;
-                          if (_savedPage != null) {
-                            int physicalPage = _totalPages - _savedPage! - 1;
-                            controller.setPage(physicalPage);
+                    //child: Container(
+                      // decoration: BoxDecoration(
+                      //   border: Border.all(
+                      //       color: Colors.red, width: 3), // Debug Border
+                      // ),
+                      //margin: const EdgeInsets.all(0), // Adds spacing around the PDF
+                      child: ColorFiltered(
+                        colorFilter: _isNightMode
+                            ? const ColorFilter.matrix(<double>[
+                                -1.0, 0.0, 0.0, 0.0, 255.0, //
+                                0.0, -1.0, 0.0, 0.0, 255.0, //
+                                0.0, 0.0, -1.0, 0.0, 255.0, //
+                                0.0, 0.0, 0.0, 1.0, 0.0, //
+                              ])
+                            : const ColorFilter.matrix(<double>[
+                                1.0, 0.0, 0.0, 0.0, 0.0, //
+                                0.0, 1.0, 0.0, 0.0, 0.0, //
+                                0.0, 0.0, 1.0, 0.0, 0.0, //
+                                0.0, 0.0, 0.0, 1.0, 0.0, //klpjol::m:m:
+                              ]),
+                        child: PDFView(
+                          filePath: _pdfPath,
+                          swipeHorizontal: true,
+                          fitPolicy:FitPolicy.BOTH,
+                          onRender: (pages) {
                             setState(() {
-                              _currentPage = _savedPage!;
-                              _isBookmarked = true;
+                              _totalPages = pages!;
+                              if (_savedPage != null) {
+                                _currentPage = _savedPage!;
+                                _pdfViewController
+                                    ?.setPage(_totalPages - _currentPage - 1);
+                              } else {
+                                _currentPage = _totalPages;
+                                _pdfViewController?.setPage(_currentPage);
+                              }
                             });
-                          }
-                        },
-                        onPageChanged: (current, total) {
-                          setState(() {
-                           _currentPage = total! - current! - 1;
-                          });
-                          _syncCurrentPage(_currentPage);
-                         
-                        },
+                          },
+                          onViewCreated: (controller) {
+                            _pdfViewController = controller;
+                            if (_savedPage != null) {
+                              int physicalPage = _totalPages - _savedPage! - 1;
+                              controller.setPage(physicalPage);
+                              setState(() {
+                                _currentPage = _savedPage!;
+                                _isBookmarked = true;
+                              });
+                            }
+                          },
+                          onPageChanged: (current, total) {
+                            setState(() {
+                              _currentPage = total! - current! - 1;
+                            });
+                            _syncCurrentPage(_currentPage);
+                          },
+                        ),
                       ),
-                    ),
+                    //),
                   ),
           ),
           Container(
-            color: _isNightMode ? AppColors.textPrimary : AppColors.textSecondary,
-            padding:
-                const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-            child: Row(
+            // decoration: BoxDecoration(
+            //   color: _isNightMode
+            //       ? AppColors.textPrimary
+            //       : AppColors.textSecondary,
+            //   border: Border.all(
+            //     color: const Color.fromARGB(255, 11, 10,
+            //         10), // Change this color for debugging or styling
+            //     width: 3, // Thickness of the border
+            //   ),
+            //   borderRadius:
+            //       BorderRadius.circular(12), // Optional: Rounded corners
+            // ),
+              color: _isNightMode ? AppColors.textPrimary : AppColors.textSecondary,
+            child: Row(   
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                TextButton(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return SouraListDialog(
-                          sourates: _sourates,
-                          onSouraSelected: (sourateName, pageIndex) {
-                            _pdfViewController?.setPage(_totalPages - pageIndex - 1);
-                            setState(() {
-                              _currentPage = pageIndex;
-                              _currentSourate = sourateName;
-                            });
-                            _syncCurrentPage(pageIndex);
-                          },
-                          isNightMode: _isNightMode,
-                        );
-                      },
-                    );
-                  },
-                  child: Text(
-                    _currentSourate,
-                    style: TextStyle(
-                      fontSize:MediaQuery.of(context).size.width * 0.06,
-                      color: _isNightMode ? Colors.white : AppColors.primary,
-                      //fontWeight: FontWeight.bold,
+                Flexible(
+                  child: TextButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return SouraListDialog(
+                            sourates: _sourates,
+                            onSouraSelected: (sourateName, pageIndex) {
+                              _pdfViewController
+                                  ?.setPage(_totalPages - pageIndex - 1);
+                              setState(() {
+                                _currentPage = pageIndex;
+                                _currentSourate = sourateName;
+                              });
+                              _syncCurrentPage(pageIndex);
+                            },
+                            isNightMode: _isNightMode,
+                          );
+                        },
+                      );
+                    },
+                    style: TextButton.styleFrom(
+                      backgroundColor:
+                          _isNightMode ? Colors.black : Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: Text(
+                      _currentSourate,
+                      style: TextStyle(
+                        fontSize: MediaQuery.of(context).size.width * 0.05 > 22
+                            ? MediaQuery.of(context).size.width * 0.05
+                            : 22,
+                        color: _isNightMode ? Colors.white : AppColors.primary,
+                        //fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
@@ -199,45 +248,62 @@ class _PdfHomePageState extends State<PdfHomePage> {
                   child: Text(
                     '${_currentPage + 1}',
                     style: TextStyle(
-                      fontSize: MediaQuery.of(context).size.width * 0.07,
+                      fontSize: MediaQuery.of(context).size.width * 0.06 > 22
+                          ? MediaQuery.of(context).size.width *
+                              0.06 // Taille relative
+                          : 25,
                       color: _isNightMode ? Colors.white : AppColors.primary,
                       decoration: TextDecoration.none,
                     ),
                   ),
                 ),
-                TextButton(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return HizbSearchDialog(
-                          ahzab: _ahzab,
-                          onPageSelected: (page) {
-                            _pdfViewController?.setPage(_totalPages - page - 1);
-                            setState(() {
-                              _currentPage = page;
-                            });
-                          },
-                          onHizbUpdated: (hizb) {
-                            setState(() {
-                              _currentHizb = hizb;
-                            });
-                            _syncCurrentPage(_currentPage);
-                          },
-                          isNightMode: _isNightMode,
-                        );
-                      },
-                    );
-                  },
-                  child: Text(
-                    'الحِزب $_currentHizb',
-                    style: TextStyle(
-                      fontSize: MediaQuery.of(context).size.width * 0.06,
-                      color: _isNightMode ? Colors.white : AppColors.primary,
-                      //fontWeight: FontWeight.bold,
+                Flexible(
+                  child: TextButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return HizbSearchDialog(
+                            ahzab: _ahzab,
+                            onPageSelected: (page) {
+                              _pdfViewController
+                                  ?.setPage(_totalPages - page - 1);
+                              setState(() {
+                                _currentPage = page;
+                              });
+                            },
+                            onHizbUpdated: (hizb) {
+                              setState(() {
+                                _currentHizb = hizb;
+                              });
+                              _syncCurrentPage(_currentPage);
+                            },
+                            isNightMode: _isNightMode,
+                          );
+                        },
+                      );
+                    },
+                    style: TextButton.styleFrom(
+                      backgroundColor:
+                          _isNightMode ? Colors.black : Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: Text(
+                      'الحِزب $_currentHizb',
+                      style: TextStyle(
+                        fontSize: MediaQuery.of(context).size.width * 0.05 > 22
+                            ? MediaQuery.of(context).size.width *
+                                0.05 // Taille relative
+                            : 22, // Ajustable selon le parent
+
+                        color: _isNightMode ? Colors.white : AppColors.primary,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
                   ),
-                ),
+                )
               ],
             ),
           ),

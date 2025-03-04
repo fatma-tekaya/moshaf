@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-import 'package:moshaf/utils/colors.dart';
+import '../utils/colors.dart';
 
 class SplashScreen extends StatefulWidget {
   final bool redirectToHome;
-  const SplashScreen({Key? key, this.redirectToHome = true}) : super(key: key);
+  const SplashScreen({super.key, this.redirectToHome = true});
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -16,7 +16,6 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     if (widget.redirectToHome) {
-      // Temporisateur pour rediriger vers la page principale
       Timer(const Duration(seconds: 4), () {
         Navigator.pushReplacementNamed(context, '/home');
       });
@@ -25,94 +24,133 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final isPortrait = screenHeight < screenWidth;
+
     return Scaffold(
+      backgroundColor: AppColors.cardBackground,
       body: Stack(
         children: [
-          // Image de fond
-          Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/splash.png'),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          // Contenu défilable
-          SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.only(
-                top: MediaQuery.of(context).size.height * 0.35,
-                left: 16.0,
-                right: 16.0,
-              ),
-              child: Column(
-                children: [
-                  Text(
-                    'المؤسسات المشاركة',
-                    style: TextStyle(
-                      fontSize: MediaQuery.of(context).size.width * 0.06,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  // Grille des logos
-                  GridView.count(
-                    crossAxisCount: 2, // Deux colonnes
-                    shrinkWrap:
-                        true, // Permet à la grille de s'adapter au contenu
-                    mainAxisSpacing: 10, // Espacement vertical
-                    crossAxisSpacing: 10, // Espacement horizontal
-                    padding: const EdgeInsets.all(16),
-                    physics:
-                        const NeverScrollableScrollPhysics(), // Désactive le défilement interne
+          // Main content with scrollable area
+          Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
                     children: [
-                      buildLogoItem(
-                          'assets/logo11.png', 'مركز الإمام ابن عرفة'),
-                      buildLogoItem(
-                          'assets/logo22.png', 'المركز العربى للكتاب'),
-                      buildLogoItem(
-                          'assets/logo33.png', 'معهد الإمام المارغني للقراءات'),
-                      buildLogoItem(
-                          'assets/logo44.png', 'دار الإمام ابن عرفة '),
+                      // Header with background image
+                      Container(
+                        width: screenWidth,
+                        height: isPortrait ? screenHeight * 0.6  : screenHeight * 0.35,
+                        decoration: const BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage('assets/header.png'),
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        "المؤسسات المشاركة",
+                        style: TextStyle(
+                          fontSize: screenWidth * 0.06,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.brown.shade700,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 20),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
+                        child: GridView.count(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          crossAxisCount: 2,
+                          childAspectRatio: 1,
+                          crossAxisSpacing: 20,
+                          mainAxisSpacing: 20,
+                          children: [
+                            OrganizationWidget(
+                                image: 'assets/logo11.png', name: "مركز الإمام ابن عرفة"),
+                            OrganizationWidget(
+                                image: 'assets/logo22.png', name: "المركز العربى للكتاب"),
+                            OrganizationWidget(
+                                image: 'assets/logo33.png', name: "معهد الإمام المارغني"),
+                            OrganizationWidget(
+                                image: 'assets/logo44.png',
+                                name: "دار الإمام ابن عرفة"),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
-                ],
+                ),
               ),
+            ],
+          ),
+
+          // Dream Catcher Image Fixed at Bottom-Left
+          if(!isPortrait)
+          Positioned(
+            bottom: 0,
+            left: 0,
+            child: Image.asset(
+              'assets/catcher.png', // Ensure the asset path is correct
+              width: screenWidth * 0.4, // Adjust width as needed
+              fit: BoxFit.contain,
             ),
           ),
         ],
       ),
     );
   }
+}
 
-  // Widget pour chaque logo avec son texte
-  Widget buildLogoItem(String imagePath, String label) {
+// Organization Widget
+class OrganizationWidget extends StatelessWidget {
+  final String image;
+  final String name;
+
+  const OrganizationWidget({super.key, required this.image, required this.name});
+
+  @override
+  Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Column(
-      mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          width: MediaQuery.of(context).size.width * 0.2,
-          height: MediaQuery.of(context).size.width * 0.2,
-          decoration: BoxDecoration(
+          width: screenWidth * 0.25,
+          height: screenWidth * 0.25,
+          decoration: const BoxDecoration(
             shape: BoxShape.circle,
             color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black26,
+                blurRadius: 4,
+                spreadRadius: 1,
+              ),
+            ],
           ),
           child: Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: Image.asset(
-              imagePath,
-              fit: BoxFit.contain,
+            padding: const EdgeInsets.all(10),
+            child: ClipOval(
+              child: Image.asset(
+                image,
+                fit: BoxFit.contain,
+              ),
             ),
           ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 8),
         Text(
-          label,
-          textAlign: TextAlign.center,
+          name,
           style: TextStyle(
-            fontSize: MediaQuery.of(context).size.width * 0.05,
-            color: AppColors.primary,
+            fontSize: screenWidth * 0.05,
           ),
+          textAlign: TextAlign.center,
         ),
       ],
     );

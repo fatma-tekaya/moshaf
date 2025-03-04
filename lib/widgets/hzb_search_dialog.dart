@@ -8,12 +8,12 @@ class HizbSearchDialog extends StatelessWidget {
   final bool isNightMode;
 
   const HizbSearchDialog({
-    Key? key,
+    super.key,
     required this.ahzab,
     required this.onPageSelected,
     required this.onHizbUpdated,
     required this.isNightMode,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,29 +21,32 @@ class HizbSearchDialog extends StatelessWidget {
       color: Colors.transparent,
       child: GestureDetector(
         onTap: () {
-          Navigator.of(context).pop(); 
+          Navigator.of(context).pop();
         },
-        behavior: HitTestBehavior.opaque, 
+        behavior: HitTestBehavior.opaque,
         child: Stack(
           children: [
             Positioned(
               bottom: 0,
               left: 0,
               child: GestureDetector(
-                onTap: () {}, 
+                onTap: () {},
                 child: Container(
-                  width: MediaQuery.of(context).size.width * 0.6,
+                  width: MediaQuery.of(context).size.width > 600
+                      ? MediaQuery.of(context).size.width * 0.5 // Tablets
+                      : MediaQuery.of(context).size.width * 0.6, // Mobile
                   height: MediaQuery.of(context).size.height * 0.75,
                   decoration: BoxDecoration(
-                    color: isNightMode ? Colors.black : AppColors.cardBackground,
+                    color:
+                        isNightMode ? Colors.black : AppColors.cardBackground,
                     borderRadius: const BorderRadius.only(
-                      topRight: Radius.circular(25.0), 
+                      topRight: Radius.circular(25.0),
                     ),
-                    boxShadow: [
+                    boxShadow: const [
                       BoxShadow(
                         color: Colors.grey,
                         blurRadius: 10,
-                        offset: const Offset(0, -5),
+                        offset: Offset(0, -5),
                       ),
                     ],
                   ),
@@ -51,31 +54,41 @@ class HizbSearchDialog extends StatelessWidget {
                     textDirection: TextDirection.rtl,
                     child: Column(
                       children: [
-                        Expanded(
-                          child: ListView.builder(
-                            itemCount: ahzab.keys.length,
-                            itemBuilder: (context, index) {
-                              int hizbNumber = ahzab.keys.elementAt(index);
-                              return ListTile(
-                                title: Text(
-                                  'الحِزب $hizbNumber',
-                                  textAlign: TextAlign.center, 
-                                  style: TextStyle(
-                                    fontSize:  MediaQuery.of(context).size.width * 0.06,
-                                    fontFamily: 'almushaf',
-                                    color: isNightMode
-                                        ? Colors.white
-                                        : AppColors.primary,
+                        Flexible(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: ListView.builder(
+                              itemCount: ahzab.keys.length,
+                              itemBuilder: (context, index) {
+                                int hizbNumber = ahzab.keys.elementAt(index);
+                                return ListTile(
+                                  title: Text(
+                                    'الحِزب $hizbNumber',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.05 >
+                                              18
+                                          ? MediaQuery.of(context).size.width *
+                                              0.05
+                                          : 18,
+                                      fontFamily: 'almushaf',
+                                      color: isNightMode
+                                          ? Colors.white
+                                          : AppColors.primary,
+                                    ),
                                   ),
-                                ),
-                                onTap: () {
-                                  int pageIndex = ahzab[hizbNumber]![0] - 1;
-                                  onPageSelected(pageIndex);
-                                  onHizbUpdated(hizbNumber);
-                                  Navigator.of(context).pop();
-                                },
-                              );
-                            },
+                                  onTap: () {
+                                    int pageIndex = ahzab[hizbNumber]![0] - 1;
+                                    onPageSelected(pageIndex);
+                                    onHizbUpdated(hizbNumber);
+                                    Navigator.of(context).pop();
+                                  },
+                                );
+                              },
+                            ),
                           ),
                         ),
                         SizedBox(
@@ -86,14 +99,18 @@ class HizbSearchDialog extends StatelessWidget {
                               backgroundColor: isNightMode
                                   ? AppColors.textSecondary
                                   : AppColors.primary,
-                              shape: RoundedRectangleBorder(
+                              shape: const RoundedRectangleBorder(
                                 borderRadius: BorderRadius.zero,
                               ),
                             ),
                             child: Text(
                               'إلغاء',
                               style: TextStyle(
-                                fontSize: MediaQuery.of(context).size.width * 0.06,
+                                fontSize: MediaQuery.of(context).size.width *
+                                            0.05 >
+                                        18
+                                    ? MediaQuery.of(context).size.width * 0.05
+                                    : 18, // Minimum size 18px
                                 color: isNightMode
                                     ? Colors.black
                                     : AppColors.cardBackground,

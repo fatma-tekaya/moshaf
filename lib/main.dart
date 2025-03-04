@@ -3,10 +3,15 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'utils/colors.dart';
 import 'screens/home_page.dart';
 import 'screens/splash_screen.dart';
-
+import 'package:flutter/services.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized(); 
-  runApp(const MyApp());
+ runApp(const MyApp());
+   SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp, // Locks in Portrait mode
+  ]).then((_) {
+    runApp(MyApp());
+  });
 }
 
 class MyApp extends StatefulWidget {
@@ -33,13 +38,13 @@ class _MyAppState extends State<MyApp> {
       title: 'المصحف الشريف',
       theme: ThemeData(
         fontFamily: 'almushaf',
-        colorScheme: ColorScheme.light(
+        colorScheme: const ColorScheme.light(
           primary: AppColors.primary,
           surface: Colors.white,
           onPrimary: Colors.white,
           onSurface: Colors.black,
         ),
-        appBarTheme: AppBarTheme(
+        appBarTheme: const AppBarTheme(
           backgroundColor: AppColors.primary,
           foregroundColor: Colors.white,
         ),

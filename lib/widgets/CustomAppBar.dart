@@ -5,10 +5,12 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback onThemeChanged;
   final VoidCallback onBookmarkPressed;
   final bool isNightMode;
+  final BuildContext context;
   final bool isBookmarked;
   final GlobalKey<ScaffoldState> scaffoldKey;
 
   const CustomAppBar({
+    required this.context,
     super.key,
     required this.onThemeChanged,
     required this.isNightMode,
@@ -19,31 +21,53 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: AppBar(
-        backgroundColor:
-            isNightMode ? AppColors.textPrimary : AppColors.textSecondary,
-        leading: IconButton(
-          icon: const Icon(Icons.menu),
-          color: isNightMode ? AppColors.textSecondary : AppColors.primary,
-          onPressed: () {
-            scaffoldKey.currentState?.openDrawer();
-          },
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(
-              isBookmarked ? Icons.bookmark : Icons.bookmark_border,
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final isPortrait = screenHeight > screenWidth;
+
+    return SafeArea(
+      child: Container(
+        // decoration: BoxDecoration(
+        //   border: Border.all(
+        //     color: const Color.fromARGB(255, 72, 0, 253), // Change this color for debugging or styling
+        //     width: 3, // Thickness of the border
+        //   ),
+        //   borderRadius: BorderRadius.circular(12), // Optional: Rounded corners
+        // ),
+        child: Directionality(
+          textDirection: TextDirection.rtl,
+          child: AppBar(
+            backgroundColor:
+                isNightMode ? AppColors.textPrimary : AppColors.textSecondary,
+            leading: IconButton(
+              icon: Icon(
+                Icons.menu,
+                size: (screenWidth * 0.05).clamp(30, 60),
+              ),
               color: isNightMode ? AppColors.textSecondary : AppColors.primary,
+              onPressed: () {
+                scaffoldKey.currentState?.openDrawer();
+              },
             ),
-            onPressed: onBookmarkPressed,
+            actions: [
+              IconButton(
+                icon: Icon(
+                  size: (screenWidth * 0.04).clamp(30, 60),
+                  isBookmarked ? Icons.bookmark : Icons.bookmark_border,
+                ),
+                color:
+                    isNightMode ? AppColors.textSecondary : AppColors.primary,
+                onPressed: onBookmarkPressed,
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+Size get preferredSize => Size.fromHeight(kToolbarHeight * (MediaQuery.of(context).size.width > 600 ? 1 : 1));
+
+
 }
