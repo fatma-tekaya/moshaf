@@ -43,17 +43,17 @@ class _PdfHomePageState extends State<PdfHomePage> {
     final prefs = await SharedPreferences.getInstance();
     _savedPage = prefs.getInt('lastSavedPage');
     final pdfFile = await _copyPdfFromAssets();
+   
     setState(() {
       _pdfPath = pdfFile.path;
-      print("here is the historique: $_savedPage");
-      if (_savedPage != null) {
-        print("here is the historique: $_savedPage");
-        _currentPage = _savedPage!;
-        _isBookmarked = true;
-      } else {
-        _currentPage = _totalPages;
-      }
-    });
+       if (_savedPage != null) {
+      _currentPage = _savedPage!;
+      _isBookmarked = (_savedPage != null);
+   }
+    else{
+       _currentPage = 0;
+       print('here current page in loadpdf $_currentPage');
+    } });
     // Ensure PDF navigates to the last saved page
     Future.delayed(const Duration(milliseconds: 500), () {
       if (_pdfViewController != null) {
@@ -156,12 +156,14 @@ class _PdfHomePageState extends State<PdfHomePage> {
                         onRender: (pages) {
                           setState(() {
                             _totalPages = pages!;
+                            print('here savedpage $_savedPage');
                             if (_savedPage != null) {
                               _currentPage = _savedPage!;
                               _pdfViewController
                                   ?.setPage(_totalPages - _currentPage - 1);
                             } else {
-                              _currentPage = _totalPages;
+                              print('hallo $_currentPage');
+                              _currentPage = 0;
                               _pdfViewController?.setPage(_currentPage);
                             }
                           });
@@ -172,7 +174,10 @@ class _PdfHomePageState extends State<PdfHomePage> {
                             int physicalPage = _totalPages - _currentPage - 1;
                             Future.delayed(const Duration(milliseconds: 500),
                                 () {
-                              _pdfViewController?.setPage(physicalPage);
+                              if (physicalPage >= 0 &&
+                                  _pdfViewController != null) {
+                                _pdfViewController?.setPage(physicalPage);
+                              }
                             });
                           }
                           // if (_savedPage != null) {
@@ -196,18 +201,6 @@ class _PdfHomePageState extends State<PdfHomePage> {
                   ),
           ),
           Container(
-            // decoration: BoxDecoration(
-            //   color: _isNightMode
-            //       ? AppColors.textPrimary
-            //       : AppColors.textSecondary,
-            //   border: Border.all(
-            //     color: const Color.fromARGB(255, 11, 10,
-            //         10), // Change this color for debugging or styling
-            //     width: 3, // Thickness of the border
-            //   ),
-            //   borderRadius:
-            //       BorderRadius.circular(12), // Optional: Rounded corners
-            // ),
             color:
                 _isNightMode ? AppColors.textPrimary : AppColors.textSecondary,
             child: Row(
@@ -249,7 +242,6 @@ class _PdfHomePageState extends State<PdfHomePage> {
                             ? MediaQuery.of(context).size.width * 0.05
                             : 22,
                         color: _isNightMode ? Colors.white : AppColors.primary,
-                        //fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
