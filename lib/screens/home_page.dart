@@ -41,15 +41,24 @@ class _PdfHomePageState extends State<PdfHomePage> {
 
   Future<void> _loadPdf() async {
     final prefs = await SharedPreferences.getInstance();
-    _savedPage = prefs.getInt('savedPage');
+    _savedPage = prefs.getInt('lastSavedPage');
     final pdfFile = await _copyPdfFromAssets();
     setState(() {
       _pdfPath = pdfFile.path;
+      print("here is the historique: $_savedPage");
       if (_savedPage != null) {
+        print("here is the historique: $_savedPage");
         _currentPage = _savedPage!;
         _isBookmarked = true;
       } else {
         _currentPage = _totalPages;
+      }
+    });
+    // Ensure PDF navigates to the last saved page
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (_pdfViewController != null) {
+        int physicalPage = _totalPages - _currentPage - 1;
+        _pdfViewController?.setPage(physicalPage);
       }
     });
   }
@@ -84,6 +93,8 @@ class _PdfHomePageState extends State<PdfHomePage> {
         onBookmarkPressed: _toggleBookmark,
         isBookmarked: _isBookmarked,
         scaffoldKey: _scaffoldKey,
+        currentPage: _currentPage, // Pass current page
+        currentSourate: _currentSourate, // Pass current Surah name
       ),
       drawer: CustomDrawer(
         isNightMode: _isNightMode,
@@ -117,61 +128,70 @@ class _PdfHomePageState extends State<PdfHomePage> {
                 : Directionality(
                     textDirection: TextDirection.rtl,
                     //child: Container(
-                      // decoration: BoxDecoration(
-                      //   border: Border.all(
-                      //       color: Colors.red, width: 3), // Debug Border
-                      // ),
-                      //margin: const EdgeInsets.all(0), // Adds spacing around the PDF
-                      child: ColorFiltered(
-                        colorFilter: _isNightMode
-                            ? const ColorFilter.matrix(<double>[
-                                -1.0, 0.0, 0.0, 0.0, 255.0, //
-                                0.0, -1.0, 0.0, 0.0, 255.0, //
-                                0.0, 0.0, -1.0, 0.0, 255.0, //
-                                0.0, 0.0, 0.0, 1.0, 0.0, //
-                              ])
-                            : const ColorFilter.matrix(<double>[
-                                1.0, 0.0, 0.0, 0.0, 0.0, //
-                                0.0, 1.0, 0.0, 0.0, 0.0, //
-                                0.0, 0.0, 1.0, 0.0, 0.0, //
-                                0.0, 0.0, 0.0, 1.0, 0.0, //klpjol::m:m:
-                              ]),
-                        child: PDFView(
-                          filePath: _pdfPath,
-                          swipeHorizontal: true,
-                          fitPolicy:FitPolicy.BOTH,
-                          onRender: (pages) {
-                            setState(() {
-                              _totalPages = pages!;
-                              if (_savedPage != null) {
-                                _currentPage = _savedPage!;
-                                _pdfViewController
-                                    ?.setPage(_totalPages - _currentPage - 1);
-                              } else {
-                                _currentPage = _totalPages;
-                                _pdfViewController?.setPage(_currentPage);
-                              }
-                            });
-                          },
-                          onViewCreated: (controller) {
-                            _pdfViewController = controller;
+                    // decoration: BoxDecoration(
+                    //   border: Border.all(
+                    //       color: Colors.red, width: 3), // Debug Border
+                    // ),
+                    //margin: const EdgeInsets.all(0), // Adds spacing around the PDF
+                    child: ColorFiltered(
+                      colorFilter: _isNightMode
+                          ? const ColorFilter.matrix(<double>[
+                              -1.0, 0.0, 0.0, 0.0, 255.0, //
+                              0.0, -1.0, 0.0, 0.0, 255.0, //
+                              0.0, 0.0, -1.0, 0.0, 255.0, //
+                              0.0, 0.0, 0.0, 1.0, 0.0, //
+                            ])
+                          : const ColorFilter.matrix(<double>[
+                              1.0, 0.0, 0.0, 0.0, 0.0, //
+                              0.0, 1.0, 0.0, 0.0, 0.0, //
+                              0.0, 0.0, 1.0, 0.0, 0.0, //
+                              0.0, 0.0, 0.0, 1.0, 0.0, //klpjol::m:m:
+                            ]),
+                      child: PDFView(
+                        filePath: _pdfPath,
+                        autoSpacing: true,
+                        swipeHorizontal: true,
+                        enableSwipe: true,
+                        fitPolicy: FitPolicy.BOTH,
+                        onRender: (pages) {
+                          setState(() {
+                            _totalPages = pages!;
                             if (_savedPage != null) {
-                              int physicalPage = _totalPages - _savedPage! - 1;
-                              controller.setPage(physicalPage);
-                              setState(() {
-                                _currentPage = _savedPage!;
-                                _isBookmarked = true;
-                              });
+                              _currentPage = _savedPage!;
+                              _pdfViewController
+                                  ?.setPage(_totalPages - _currentPage - 1);
+                            } else {
+                              _currentPage = _totalPages;
+                              _pdfViewController?.setPage(_currentPage);
                             }
-                          },
-                          onPageChanged: (current, total) {
-                            setState(() {
-                              _currentPage = total! - current! - 1;
+                          });
+                        },
+                        onViewCreated: (controller) {
+                          _pdfViewController = controller;
+                          if (_currentPage != null) {
+                            int physicalPage = _totalPages - _currentPage - 1;
+                            Future.delayed(const Duration(milliseconds: 500),
+                                () {
+                              _pdfViewController?.setPage(physicalPage);
                             });
-                            _syncCurrentPage(_currentPage);
-                          },
-                        ),
+                          }
+                          // if (_savedPage != null) {
+                          //   int physicalPage = _totalPages - _savedPage! - 1;
+                          //   controller.setPage(physicalPage);
+                          //   setState(() {
+                          //     _currentPage = _savedPage!;
+                          //     _isBookmarked = true;
+                          //   });
+                          // }
+                        },
+                        onPageChanged: (current, total) {
+                          setState(() {
+                            _currentPage = total! - current! - 1;
+                          });
+                          _syncCurrentPage(_currentPage);
+                        },
                       ),
+                    ),
                     //),
                   ),
           ),
@@ -188,8 +208,9 @@ class _PdfHomePageState extends State<PdfHomePage> {
             //   borderRadius:
             //       BorderRadius.circular(12), // Optional: Rounded corners
             // ),
-              color: _isNightMode ? AppColors.textPrimary : AppColors.textSecondary,
-            child: Row(   
+            color:
+                _isNightMode ? AppColors.textPrimary : AppColors.textSecondary,
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Flexible(
@@ -342,21 +363,24 @@ class _PdfHomePageState extends State<PdfHomePage> {
     });
   }
 
-  void _toggleBookmark() async {
+  void _toggleBookmark(String sourate, int page) async {
     final prefs = await SharedPreferences.getInstance();
+    List<String> savedPages = prefs.getStringList('savedPages') ?? [];
+
+    final String date = DateTime.now().toIso8601String().split('T')[0];
+    final String newEntry = '$date|$sourate|$page';
+
     setState(() {
-      if (_isBookmarked) {
-        _savedPage = null;
+      if (savedPages.contains(newEntry)) {
+        savedPages.remove(newEntry); //to remove it if exist
+        _isBookmarked = false;
       } else {
-        _savedPage = _currentPage;
+        savedPages.add(newEntry);
+        _isBookmarked = true;
+        prefs.setInt('lastSavedPage', page); // Save only last page separately
       }
-      _isBookmarked = !_isBookmarked;
     });
 
-    if (_savedPage != null) {
-      await prefs.setInt('savedPage', _savedPage!);
-    } else {
-      await prefs.remove('savedPage');
-    }
+    await prefs.setStringList('savedPages', savedPages);
   }
 }

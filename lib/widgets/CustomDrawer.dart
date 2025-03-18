@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../utils/colors.dart';
 import '../screens/splash_screen.dart';
 import 'launch_Facebook.dart';
+import '../screens/historique_screen.dart';
+import '../screens/aamalna_screen.dart';
 
 class CustomDrawer extends StatelessWidget {
   final bool isNightMode;
@@ -24,24 +26,27 @@ class CustomDrawer extends StatelessWidget {
           ? screenWidth * 0.5 // Large screens (Laptops, Large Tablets)
           : screenWidth > 800
               ? screenWidth * 0.5 // Medium Tablets
-              : screenWidth * 0.7, // Default for Phones// Responsive drawer width
+              : screenWidth *
+                  0.7, // Default for Phones// Responsive drawer width
       child: Container(
         color: isNightMode ? AppColors.textPrimary : AppColors.sidBarBackground,
         child: Column(
           children: [
             // Drawer Header with background image
             DrawerHeader(
-              decoration:  BoxDecoration(
+              decoration: BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage('assets/Plan.png'),
-                   fit: MediaQuery.of(context).size.width > 600 ? BoxFit.fill : BoxFit.cover, // Keeps aspect ratio while covering the header
+                  fit: MediaQuery.of(context).size.width > 600
+                      ? BoxFit.fill
+                      : BoxFit
+                          .cover, // Keeps aspect ratio while covering the header
                 ),
               ),
               child: Container(
                 height: MediaQuery.of(context).size.height *
                     0.40, // 25% of screen height
                 alignment: Alignment.center, // Centers any child inside
-                
               ),
             ),
             // Drawer Content
@@ -52,7 +57,7 @@ class CustomDrawer extends StatelessWidget {
                 ),
                 children: [
                   Text(
-                    'اعدادات',
+                    'إِعدادات',
                     style: TextStyle(
                       color: AppColors.textSecondary,
                       fontSize:
@@ -80,6 +85,32 @@ class CustomDrawer extends StatelessWidget {
                         ? Colors.grey[800]
                         : Colors.grey[200], // Highlight on tap
                   ),
+                  ListTile(
+                    leading: Icon(
+                      Icons.history, // Use an appropriate icon
+                      color: AppColors.textSecondary,
+                      size: screenWidth * 0.06, // Responsive icon size
+                    ),
+                    title: Text(
+                      'مرجعيات',
+                      style: TextStyle(
+                        color: AppColors.textSecondary,
+                        fontSize:
+                            screenWidth * 0.05 > 18 ? screenWidth * 0.05 : 18,
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const HistoriqueScreen(),
+                        ),
+                      );
+                    },
+                    tileColor: isNightMode
+                        ? Colors.grey[800]
+                        : Colors.grey[200], // Highlight on tap
+                  ),
                   const Divider(
                     thickness: 1.5,
                     color: AppColors.textSecondary,
@@ -94,6 +125,33 @@ class CustomDrawer extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 10), // Spacing
+                  ListTile(
+                    leading: Icon(
+                      Icons.rocket_launch,
+                      color: AppColors.textSecondary,
+                      size: screenWidth * 0.06, // Responsive icon size
+                    ),
+                    title: Text(
+                      ' أعمالنا المستقبلية',
+                      style: TextStyle(
+                        color: AppColors.textSecondary,
+                        fontSize:
+                            screenWidth * 0.05 > 18 ? screenWidth * 0.05 : 18,
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              const AamalnaScreen(), // Interface des images
+                        ),
+                      );
+                    },
+                    tileColor: isNightMode
+                        ? Colors.grey[800]
+                        : Colors.grey[200], // Highlight on tap
+                  ),
                   ListTile(
                     leading: Icon(
                       Icons.book_outlined,

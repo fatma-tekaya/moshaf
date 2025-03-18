@@ -3,11 +3,13 @@ import '../utils/colors.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback onThemeChanged;
-  final VoidCallback onBookmarkPressed;
+  final void Function(String, int) onBookmarkPressed;
   final bool isNightMode;
   final BuildContext context;
   final bool isBookmarked;
   final GlobalKey<ScaffoldState> scaffoldKey;
+  final int currentPage; // New parameter for the current page
+  final String currentSourate; // New parameter for the current Surah name
 
   const CustomAppBar({
     required this.context,
@@ -17,6 +19,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.onBookmarkPressed,
     required this.isBookmarked,
     required this.scaffoldKey,
+    required this.currentPage, // Added
+    required this.currentSourate, // Added
   });
 
   @override
@@ -57,7 +61,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 ),
                 color:
                     isNightMode ? AppColors.textSecondary : AppColors.primary,
-                onPressed: onBookmarkPressed,
+              onPressed: () => onBookmarkPressed(currentSourate, currentPage),
+             
               ),
             ],
           ),
@@ -67,7 +72,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-Size get preferredSize => Size.fromHeight(kToolbarHeight * (MediaQuery.of(context).size.width > 600 ? 1 : 1));
-
-
+  Size get preferredSize => Size.fromHeight(
+      kToolbarHeight * (MediaQuery.of(context).size.width > 600 ? 1 : 1));
 }
