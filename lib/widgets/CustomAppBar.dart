@@ -10,6 +10,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
   final int currentPage; // New parameter for the current page
   final String currentSourate; // New parameter for the current Surah name
+  final VoidCallback onSearchPressed;
+
+  //final VoidCallback onSharePressed;
 
   const CustomAppBar({
     required this.context,
@@ -21,6 +24,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.scaffoldKey,
     required this.currentPage, // Added
     required this.currentSourate, // Added
+    required this.onSearchPressed,
+
+    // required this.onSharePressed,
   });
 
   @override
@@ -55,15 +61,26 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
             actions: [
               IconButton(
+                icon:Icon(Icons.search, size: (screenWidth * 0.04).clamp(30, 60),),
+                onPressed: onSearchPressed,
+                color:
+                    isNightMode ? AppColors.textSecondary : AppColors.primary,
+              ),
+              IconButton(
                 icon: Icon(
                   size: (screenWidth * 0.04).clamp(30, 60),
                   isBookmarked ? Icons.bookmark : Icons.bookmark_border,
                 ),
                 color:
                     isNightMode ? AppColors.textSecondary : AppColors.primary,
-              onPressed: () => onBookmarkPressed(currentSourate, currentPage),
-             
+                onPressed: () => onBookmarkPressed(currentSourate, currentPage),
               ),
+              // IconButton(
+              //   icon: Icon(Icons.share),
+              //   onPressed: onSharePressed,
+              //   color:
+              //       isNightMode ? AppColors.textSecondary : AppColors.primary,
+              // ),
             ],
           ),
         ),

@@ -4,14 +4,23 @@ import 'utils/colors.dart';
 import 'screens/home_page.dart';
 import 'screens/splash_screen.dart';
 import 'package:flutter/services.dart';
-void main() {
-  WidgetsFlutterBinding.ensureInitialized(); 
- runApp(const MyApp());
-   SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp, // Locks in Portrait mode
-  ]).then((_) {
-    runApp(MyApp());
-  });
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+
+void main() async{
+ WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Firebase asynchronously
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  // Lock device orientation before running the app
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp, 
+  ]);
+
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
@@ -81,7 +90,6 @@ class _MyAppState extends State<MyApp> {
         '/home': (context) => PdfHomePage(
               onThemeChanged: _toggleTheme, // Passer le toggle au HomePage
             ),
-        
       },
     );
   }

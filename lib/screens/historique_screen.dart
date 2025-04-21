@@ -18,17 +18,28 @@ class _HistoriqueScreenState extends State<HistoriqueScreen> {
     _loadSavedPages();
   }
 
-  Future<List<String>> _loadSavedPages() async {
+  Future<void> _loadSavedPages() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getStringList('savedPages') ?? [];
+    final List<String> saved = prefs.getStringList('savedPages') ?? [];
+    setState(() {
+      _savedPages = saved;
+    });
   }
 
   void _removeBookmark(String entry) async {
     final prefs = await SharedPreferences.getInstance();
+
     setState(() {
       _savedPages.remove(entry);
     });
+
     await prefs.setStringList('savedPages', _savedPages);
+
+    // Supprimer aussi la page courante si c'était la dernière
+    final lastSaved = prefs.getInt('lastSavedPage');
+    if (_savedPages.isEmpty || entry.contains('|${lastSaved.toString()}')) {
+      await prefs.remove('lastSavedPage');
+    }
   }
 
   @override
@@ -40,55 +51,46 @@ class _HistoriqueScreenState extends State<HistoriqueScreen> {
         title: Text(
           'المرجعيات',
           style: TextStyle(
-            fontSize:
-                screenWidth * 0.06 > 24 ? 24 : screenWidth * 0.06, // Dynamique
+            fontSize: screenWidth * 0.06 > 24 ? 24 : screenWidth * 0.06,
           ),
         ),
         backgroundColor: AppColors.primary,
       ),
-      body: FutureBuilder<List<String>>(
-        future: _loadSavedPages(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(
+      body: _savedPages.isEmpty
+          ? const Center(
               child: Text(
                 'لا توجد صفحات محفوظة',
                 style: TextStyle(fontSize: 22, fontFamily: 'almushaf'),
               ),
-            );
-          }
+            )
+          : ListView.builder(
+              itemCount: _savedPages.length,
+              itemBuilder: (context, index) {
+                final parts = _savedPages[index].split('|');
+                final date = parts[0];
+                final surah = parts[1];
+                final pageNumber = parts[2];
 
-          List<String> savedPages = snapshot.data!;
-          return ListView.builder(
-            itemCount: savedPages.length,
-            itemBuilder: (context, index) {
-              final parts = savedPages[index].split('|');
-              final date = parts[0];
-              final surah = parts[1];
-              final pageNumber = parts[2];
-
-              return ListTile(
-                title: Text(surah,
+                return ListTile(
+                  title: Text(
+                    surah,
                     textAlign: TextAlign.right,
-                    style:
-                        TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                subtitle: Text(
-                  'صفحة ${int.parse(pageNumber) + 1}   -   $date',
-                  textAlign: TextAlign.right,
-                  style: TextStyle(fontSize: 16),
-                ),
-                leading: const Icon(Icons.bookmark, color: Colors.brown),
-                trailing: IconButton(
-                  icon: const Icon(Icons.close, color: Colors.grey),
-                  onPressed: () => _removeBookmark(savedPages[index]),
-                ),
-              );
-            },
-          );
-        },
-      ),
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  subtitle: Text(
+                    'صفحة ${int.parse(pageNumber) + 1}   -   $date',
+                    textAlign: TextAlign.right,
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                  leading: const Icon(Icons.bookmark, color: Colors.brown),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.close, color: Colors.grey),
+                    onPressed: () => _removeBookmark(_savedPages[index]),
+                  ),
+                );
+              },
+            ),
     );
   }
 }

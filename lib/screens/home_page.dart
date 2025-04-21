@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
-import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import '../widgets/page_search_dialog.dart';
+import '../widgets/ayah_search.dart';
 import '../widgets/CustomAppBar.dart';
 import '../widgets/CustomDrawer.dart';
 import '../widgets/soura_search_dialog.dart';
@@ -10,6 +10,12 @@ import '../widgets/hzb_search_dialog.dart';
 import '../utils/constants.dart';
 import '../utils/colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:path_provider/path_provider.dart';
+// import 'package:pdfx/pdfx.dart';
+// import 'package:share_plus/share_plus.dart';
+// import 'dart:ui' as ui;
+// import 'dart:typed_data';
+// import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 
 class PdfHomePage extends StatefulWidget {
   final VoidCallback onThemeChanged;
@@ -43,21 +49,21 @@ class _PdfHomePageState extends State<PdfHomePage> {
     final prefs = await SharedPreferences.getInstance();
     _savedPage = prefs.getInt('lastSavedPage');
     final pdfFile = await _copyPdfFromAssets();
-   
+
     setState(() {
       _pdfPath = pdfFile.path;
-       if (_savedPage != null) {
-      _currentPage = _savedPage!;
-      _isBookmarked = (_savedPage != null);
-   }
-    else{
-       _currentPage = 0;
-       print('here current page in loadpdf $_currentPage');
-    } });
-    // Ensure PDF navigates to the last saved page
-    Future.delayed(const Duration(milliseconds: 500), () {
-      if (_pdfViewController != null) {
-        int physicalPage = _totalPages - _currentPage - 1;
+      if (_savedPage != null) {
+        _currentPage = _savedPage!;
+        _isBookmarked = true;
+      } else {
+        _currentPage = 0; // ⬅️ This ensures reset if no saved page
+        _isBookmarked = false;
+      }
+    });
+    // Navigate to saved page after delay
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_pdfViewController != null && _totalPages > 0) {
+        final physicalPage = _totalPages - _currentPage - 1;
         _pdfViewController?.setPage(physicalPage);
       }
     });
@@ -89,12 +95,26 @@ class _PdfHomePageState extends State<PdfHomePage> {
           });
         },
         context: context,
+        // onSharePressed: () async {
+        //   await shareCurrentPage(
+        //       _currentPage + 1, _pdfPath); // +1 because pages are 1-based
+        // },
+
         isNightMode: _isNightMode,
         onBookmarkPressed: _toggleBookmark,
         isBookmarked: _isBookmarked,
         scaffoldKey: _scaffoldKey,
         currentPage: _currentPage, // Pass current page
         currentSourate: _currentSourate, // Pass current Surah name
+        onSearchPressed: () async {
+          final verses = await AyahSearch.loadQuranData(context);
+          AyahSearch.showAyahSearchDialog(context, verses, (selectedPage) {
+            _pdfViewController?.setPage(_totalPages - selectedPage - 1);
+            setState(() {
+              _currentPage = selectedPage;
+            });
+          });
+        },
       ),
       drawer: CustomDrawer(
         isNightMode: _isNightMode,
@@ -127,12 +147,6 @@ class _PdfHomePageState extends State<PdfHomePage> {
                   )
                 : Directionality(
                     textDirection: TextDirection.rtl,
-                    //child: Container(
-                    // decoration: BoxDecoration(
-                    //   border: Border.all(
-                    //       color: Colors.red, width: 3), // Debug Border
-                    // ),
-                    //margin: const EdgeInsets.all(0), // Adds spacing around the PDF
                     child: ColorFiltered(
                       colorFilter: _isNightMode
                           ? const ColorFilter.matrix(<double>[
@@ -156,13 +170,13 @@ class _PdfHomePageState extends State<PdfHomePage> {
                         onRender: (pages) {
                           setState(() {
                             _totalPages = pages!;
-                            print('here savedpage $_savedPage');
+                            //print('here savedpage $_savedPage');
                             if (_savedPage != null) {
                               _currentPage = _savedPage!;
                               _pdfViewController
                                   ?.setPage(_totalPages - _currentPage - 1);
                             } else {
-                              print('hallo $_currentPage');
+                              // print('hallo $_currentPage');
                               _currentPage = 0;
                               _pdfViewController?.setPage(_currentPage);
                             }
@@ -180,14 +194,6 @@ class _PdfHomePageState extends State<PdfHomePage> {
                               }
                             });
                           }
-                          // if (_savedPage != null) {
-                          //   int physicalPage = _totalPages - _savedPage! - 1;
-                          //   controller.setPage(physicalPage);
-                          //   setState(() {
-                          //     _currentPage = _savedPage!;
-                          //     _isBookmarked = true;
-                          //   });
-                          // }
                         },
                         onPageChanged: (current, total) {
                           setState(() {
@@ -277,7 +283,7 @@ class _PdfHomePageState extends State<PdfHomePage> {
                         context: context,
                         builder: (BuildContext context) {
                           return HizbSearchDialog(
-                            ahzab: _ahzab,
+                            data: data,
                             onPageSelected: (page) {
                               _pdfViewController
                                   ?.setPage(_totalPages - page - 1);
@@ -307,10 +313,8 @@ class _PdfHomePageState extends State<PdfHomePage> {
                       'الحِزب $_currentHizb',
                       style: TextStyle(
                         fontSize: MediaQuery.of(context).size.width * 0.05 > 22
-                            ? MediaQuery.of(context).size.width *
-                                0.05 // Taille relative
-                            : 22, // Ajustable selon le parent
-
+                            ? MediaQuery.of(context).size.width * 0.05
+                            : 22,
                         color: _isNightMode ? Colors.white : AppColors.primary,
                       ),
                       textAlign: TextAlign.center,
@@ -364,15 +368,42 @@ class _PdfHomePageState extends State<PdfHomePage> {
 
     setState(() {
       if (savedPages.contains(newEntry)) {
-        savedPages.remove(newEntry); //to remove it if exist
+        savedPages.remove(newEntry);
         _isBookmarked = false;
+
+        // Remove lastSavedPage only if it's this page
+        if (prefs.getInt('lastSavedPage') == page) {
+          prefs.remove('lastSavedPage');
+        }
       } else {
         savedPages.add(newEntry);
         _isBookmarked = true;
-        prefs.setInt('lastSavedPage', page); // Save only last page separately
+        prefs.setInt('lastSavedPage', page); // update only when adding
       }
     });
 
     await prefs.setStringList('savedPages', savedPages);
   }
+
+// Future<void> shareCurrentPage(int pageNumber, String pdfPath) async {
+//   final dynamicLinkParams = DynamicLinkParameters(
+//     uriPrefix: 'https://yourprefix.page.link', // Replace with your own
+//     link: Uri.parse('https://example.com/page?page=$pageNumber'),
+//     androidParameters: AndroidParameters(
+//       packageName: 'com.example.yourapp',
+//       minimumVersion: 1,
+//     ),
+//     socialMetaTagParameters: SocialMetaTagParameters(
+//       title: 'المصحف الشريف',
+//       description: 'الصفحة رقم $pageNumber',
+//     ),
+//   );
+
+//   final shortLink =
+//       await FirebaseDynamicLinks.instance.buildShortLink(dynamicLinkParams);
+
+//   await Share.share(
+//     'صفحة $pageNumber من المصحف الشريف:\n${shortLink.shortUrl}',
+//   );
+// }
 }

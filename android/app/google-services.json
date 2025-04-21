@@ -1,0 +1,125 @@
+{
+  "project_info": {
+    "project_number": "536049852305",
+    "firebase_url": "https://project-2d6bb-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "project-2d6bb",
+    "storage_bucket": "project-2d6bb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:536049852305:android:cfceb817c07e40097cc430",
+        "android_client_info": {
+          "package_name": "com.almoshaf.moshaf"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWMaZrI-rjQzTBsTKuHSy9_q0xePGVLd4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:536049852305:android:b4a3c523631f87877cc430",
+        "android_client_info": {
+          "package_name": "com.example.firstapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWMaZrI-rjQzTBsTKuHSy9_q0xePGVLd4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:536049852305:android:1e78bd65b31edab97cc430",
+        "android_client_info": {
+          "package_name": "com.example.gestiondesclubs"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWMaZrI-rjQzTBsTKuHSy9_q0xePGVLd4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:536049852305:android:ff2c0539d1d547d87cc430",
+        "android_client_info": {
+          "package_name": "com.example.mon_projet_final"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWMaZrI-rjQzTBsTKuHSy9_q0xePGVLd4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:536049852305:android:ee0ebd979ef9d9f57cc430",
+        "android_client_info": {
+          "package_name": "com.mobi.SmartWatch"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWMaZrI-rjQzTBsTKuHSy9_q0xePGVLd4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:536049852305:android:00b0c477ecd07e517cc430",
+        "android_client_info": {
+          "package_name": "epi.gl.appcontactsg2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWMaZrI-rjQzTBsTKuHSy9_q0xePGVLd4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
