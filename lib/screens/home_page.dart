@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'dart:io';
+//import 'package:audioplayers/audioplayers.dart';
 import '../widgets/page_search_dialog.dart';
 import '../widgets/ayah_search.dart';
 import '../widgets/CustomAppBar.dart';
@@ -11,6 +12,7 @@ import '../utils/constants.dart';
 import '../utils/colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path_provider/path_provider.dart';
+import '../widgets/audio_button.dart';
 // import 'package:pdfx/pdfx.dart';
 // import 'package:share_plus/share_plus.dart';
 // import 'dart:ui' as ui;
@@ -199,12 +201,23 @@ class _PdfHomePageState extends State<PdfHomePage> {
                           setState(() {
                             _currentPage = total! - current! - 1;
                           });
+
                           _syncCurrentPage(_currentPage);
                         },
                       ),
                     ),
                     //),
                   ),
+          ),
+          Container(
+            width: double.infinity,
+            color:_isNightMode?  AppColors.textPrimary : AppColors.textSecondary, // background black
+            child: Center(
+              child: AudioPlayButton(
+                currentPage: _currentPage,
+                isNightMode: _isNightMode,
+              ),
+            ),
           ),
           Container(
             color:

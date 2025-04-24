@@ -18,6 +18,9 @@ dependencies:
   smooth_page_indicator: ^1.2.1
   share_plus: ^10.1.4
   pdfx: ^2.8.0 
+  #audio
+  audioplayers: ^6.4.0
+  just_audio: ^0.10.0
   #firebase
   firebase_core: ^2.27.0 
   firebase_dynamic_links: ^5.4.15
@@ -39,6 +42,7 @@ flutter:
     - assets/splash.png
     - assets/tessdata_config.json
     - assets/tessdata/ara.traineddata
+    - assets/audios/
  
   fonts:
     - family: Lateef
