@@ -4,6 +4,7 @@ import '../screens/splash_screen.dart';
 import 'launch_Facebook.dart';
 import '../screens/historique_screen.dart';
 import '../screens/aamalna_screen.dart';
+import 'package:share_plus/share_plus.dart';
 
 class CustomDrawer extends StatelessWidget {
   final bool isNightMode;
@@ -18,21 +19,26 @@ class CustomDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    // final screenHeight = MediaQuery.of(context).size.height;
-    // final isPortrait = screenHeight < screenWidth;
-    // final isIpad = screenWidth > 700;
+    void shareApp() {
+      const playStoreLink =
+          'https://play.google.com/store/apps/details?id=com.almoshaf.moshaf';
+
+      Share.share(
+        '📖 حمّل تطبيق المصحف الشريف وابدأ القراءة:\n\n$playStoreLink',
+      );
+    }
+
     return Drawer(
       width: screenWidth > 1200
-          ? screenWidth * 0.5 // Large screens (Laptops, Large Tablets)
+          ? screenWidth * 0.5 
           : screenWidth > 800
-              ? screenWidth * 0.5 // Medium Tablets
+              ? screenWidth * 0.5 
               : screenWidth *
-                  0.7, // Default for Phones// Responsive drawer width
+                  0.7, 
       child: Container(
         color: isNightMode ? AppColors.textPrimary : AppColors.sidBarBackground,
         child: Column(
           children: [
-            // Drawer Header with background image
             DrawerHeader(
               decoration: BoxDecoration(
                 image: DecorationImage(
@@ -40,20 +46,20 @@ class CustomDrawer extends StatelessWidget {
                   fit: MediaQuery.of(context).size.width > 600
                       ? BoxFit.fill
                       : BoxFit
-                          .cover, // Keeps aspect ratio while covering the header
+                          .cover,
                 ),
               ),
               child: Container(
                 height: MediaQuery.of(context).size.height *
-                    0.40, // 25% of screen height
-                alignment: Alignment.center, // Centers any child inside
+                    0.40,
+                alignment: Alignment.center, 
               ),
             ),
             // Drawer Content
             Expanded(
               child: ListView(
                 padding: EdgeInsets.symmetric(
-                  horizontal: screenWidth * 0.05, // Responsive padding
+                  horizontal: screenWidth * 0.05, 
                 ),
                 children: [
                   Text(
@@ -65,12 +71,12 @@ class CustomDrawer extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 10), // Spacing
+                  const SizedBox(height: 10), 
                   ListTile(
                     leading: Icon(
                       Icons.nightlight_round,
                       color: AppColors.textSecondary,
-                      size: screenWidth * 0.06, // Responsive icon size
+                      size: screenWidth * 0.06, 
                     ),
                     title: Text(
                       'تبديل الوضع الليلي',
@@ -87,9 +93,9 @@ class CustomDrawer extends StatelessWidget {
                   ),
                   ListTile(
                     leading: Icon(
-                      Icons.history, // Use an appropriate icon
+                      Icons.history, 
                       color: AppColors.textSecondary,
-                      size: screenWidth * 0.06, // Responsive icon size
+                      size: screenWidth * 0.06, 
                     ),
                     title: Text(
                       'مرجعيات',
@@ -103,13 +109,14 @@ class CustomDrawer extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const HistoriqueScreen(),
+                          builder: (context) =>
+                              HistoriqueScreen(isNightMode: isNightMode),
                         ),
                       );
                     },
                     tileColor: isNightMode
                         ? Colors.grey[800]
-                        : Colors.grey[200], // Highlight on tap
+                        : Colors.grey[200], 
                   ),
                   const Divider(
                     thickness: 1.5,
@@ -124,12 +131,12 @@ class CustomDrawer extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 10), // Spacing
+                  const SizedBox(height: 10), 
                   ListTile(
                     leading: Icon(
                       Icons.rocket_launch,
                       color: AppColors.textSecondary,
-                      size: screenWidth * 0.06, // Responsive icon size
+                      size: screenWidth * 0.06, 
                     ),
                     title: Text(
                       ' أعمالنا المستقبلية',
@@ -144,19 +151,19 @@ class CustomDrawer extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
-                              const AamalnaScreen(), // Interface des images
+                              const AamalnaScreen(), 
                         ),
                       );
                     },
                     tileColor: isNightMode
                         ? Colors.grey[800]
-                        : Colors.grey[200], // Highlight on tap
+                        : Colors.grey[200], 
                   ),
                   ListTile(
                     leading: Icon(
                       Icons.book_outlined,
                       color: AppColors.textSecondary,
-                      size: screenWidth * 0.06, // Responsive icon size
+                      size: screenWidth * 0.06, 
                     ),
                     title: Text(
                       'المؤسسات المشاركة',
@@ -177,13 +184,13 @@ class CustomDrawer extends StatelessWidget {
                     },
                     tileColor: isNightMode
                         ? Colors.grey[800]
-                        : Colors.grey[200], // Highlight on tap
+                        : Colors.grey[200], 
                   ),
                   ListTile(
                     leading: Icon(
-                      Icons.share,
+                      Icons.facebook_outlined,
                       color: AppColors.textSecondary,
-                      size: screenWidth * 0.06, // Responsive icon size
+                      size: screenWidth * 0.06, 
                     ),
                     title: Text(
                       'تواصل معنا',
@@ -197,7 +204,26 @@ class CustomDrawer extends StatelessWidget {
                         LaunchFacebook.showFacebookChoiceDialog(context),
                     tileColor: isNightMode
                         ? Colors.grey[800]
-                        : Colors.grey[200], // Highlight on tap
+                        : Colors.grey[200], 
+                  ),
+                  ListTile(
+                    leading: Icon(
+                      Icons.share,
+                      color: AppColors.textSecondary,
+                      size: screenWidth * 0.06, 
+                    ),
+                    title: Text(
+                      'شارك التطبيق',
+                      style: TextStyle(
+                        color: AppColors.textSecondary,
+                        fontSize:
+                            screenWidth * 0.05 > 18 ? screenWidth * 0.05 : 18,
+                      ),
+                    ),
+                    onTap: () => shareApp(),
+                    tileColor: isNightMode
+                        ? Colors.grey[800]
+                        : Colors.grey[200], 
                   ),
                 ],
               ),

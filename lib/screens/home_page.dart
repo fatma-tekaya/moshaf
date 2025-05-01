@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'dart:io';
-//import 'package:audioplayers/audioplayers.dart';
 import '../widgets/page_search_dialog.dart';
 import '../widgets/ayah_search.dart';
 import '../widgets/CustomAppBar.dart';
@@ -13,11 +12,7 @@ import '../utils/colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path_provider/path_provider.dart';
 import '../widgets/audio_button.dart';
-// import 'package:pdfx/pdfx.dart';
-// import 'package:share_plus/share_plus.dart';
-// import 'dart:ui' as ui;
-// import 'dart:typed_data';
-// import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
+import 'dart:async';
 
 class PdfHomePage extends StatefulWidget {
   final VoidCallback onThemeChanged;
@@ -58,7 +53,7 @@ class _PdfHomePageState extends State<PdfHomePage> {
         _currentPage = _savedPage!;
         _isBookmarked = true;
       } else {
-        _currentPage = 0; // ⬅️ This ensures reset if no saved page
+        _currentPage = 0; 
         _isBookmarked = false;
       }
     });
@@ -97,20 +92,16 @@ class _PdfHomePageState extends State<PdfHomePage> {
           });
         },
         context: context,
-        // onSharePressed: () async {
-        //   await shareCurrentPage(
-        //       _currentPage + 1, _pdfPath); // +1 because pages are 1-based
-        // },
-
         isNightMode: _isNightMode,
         onBookmarkPressed: _toggleBookmark,
         isBookmarked: _isBookmarked,
         scaffoldKey: _scaffoldKey,
-        currentPage: _currentPage, // Pass current page
-        currentSourate: _currentSourate, // Pass current Surah name
+        currentPage: _currentPage, 
+        currentSourate: _currentSourate, 
         onSearchPressed: () async {
           final verses = await AyahSearch.loadQuranData(context);
-          AyahSearch.showAyahSearchDialog(context, verses, (selectedPage) {
+          AyahSearch.showAyahSearchDialog(context, verses, _isNightMode,
+              (selectedPage) {
             _pdfViewController?.setPage(_totalPages - selectedPage - 1);
             setState(() {
               _currentPage = selectedPage;
@@ -161,7 +152,7 @@ class _PdfHomePageState extends State<PdfHomePage> {
                               1.0, 0.0, 0.0, 0.0, 0.0, //
                               0.0, 1.0, 0.0, 0.0, 0.0, //
                               0.0, 0.0, 1.0, 0.0, 0.0, //
-                              0.0, 0.0, 0.0, 1.0, 0.0, //klpjol::m:m:
+                              0.0, 0.0, 0.0, 1.0, 0.0, //
                             ]),
                       child: PDFView(
                         filePath: _pdfPath,
@@ -172,13 +163,11 @@ class _PdfHomePageState extends State<PdfHomePage> {
                         onRender: (pages) {
                           setState(() {
                             _totalPages = pages!;
-                            //print('here savedpage $_savedPage');
                             if (_savedPage != null) {
                               _currentPage = _savedPage!;
                               _pdfViewController
                                   ?.setPage(_totalPages - _currentPage - 1);
                             } else {
-                              // print('hallo $_currentPage');
                               _currentPage = 0;
                               _pdfViewController?.setPage(_currentPage);
                             }
@@ -206,12 +195,13 @@ class _PdfHomePageState extends State<PdfHomePage> {
                         },
                       ),
                     ),
-                    //),
                   ),
           ),
           Container(
             width: double.infinity,
-            color:_isNightMode?  AppColors.textPrimary : AppColors.textSecondary, // background black
+            color: _isNightMode
+                ? AppColors.textPrimary
+                : AppColors.textSecondary,
             child: Center(
               child: AudioPlayButton(
                 currentPage: _currentPage,
@@ -219,6 +209,7 @@ class _PdfHomePageState extends State<PdfHomePage> {
               ),
             ),
           ),
+         
           Container(
             color:
                 _isNightMode ? AppColors.textPrimary : AppColors.textSecondary,
@@ -282,7 +273,7 @@ class _PdfHomePageState extends State<PdfHomePage> {
                     style: TextStyle(
                       fontSize: MediaQuery.of(context).size.width * 0.06 > 22
                           ? MediaQuery.of(context).size.width *
-                              0.06 // Taille relative
+                              0.06 
                           : 25,
                       color: _isNightMode ? Colors.white : AppColors.primary,
                       decoration: TextDecoration.none,
@@ -391,32 +382,10 @@ class _PdfHomePageState extends State<PdfHomePage> {
       } else {
         savedPages.add(newEntry);
         _isBookmarked = true;
-        prefs.setInt('lastSavedPage', page); // update only when adding
+        prefs.setInt('lastSavedPage', page); 
       }
     });
 
     await prefs.setStringList('savedPages', savedPages);
   }
-
-// Future<void> shareCurrentPage(int pageNumber, String pdfPath) async {
-//   final dynamicLinkParams = DynamicLinkParameters(
-//     uriPrefix: 'https://yourprefix.page.link', // Replace with your own
-//     link: Uri.parse('https://example.com/page?page=$pageNumber'),
-//     androidParameters: AndroidParameters(
-//       packageName: 'com.example.yourapp',
-//       minimumVersion: 1,
-//     ),
-//     socialMetaTagParameters: SocialMetaTagParameters(
-//       title: 'المصحف الشريف',
-//       description: 'الصفحة رقم $pageNumber',
-//     ),
-//   );
-
-//   final shortLink =
-//       await FirebaseDynamicLinks.instance.buildShortLink(dynamicLinkParams);
-
-//   await Share.share(
-//     'صفحة $pageNumber من المصحف الشريف:\n${shortLink.shortUrl}',
-//   );
-// }
 }

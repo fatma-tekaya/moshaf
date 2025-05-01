@@ -8,12 +8,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final BuildContext context;
   final bool isBookmarked;
   final GlobalKey<ScaffoldState> scaffoldKey;
-  final int currentPage; // New parameter for the current page
-  final String currentSourate; // New parameter for the current Surah name
+  final int currentPage;
+  final String currentSourate; 
   final VoidCallback onSearchPressed;
-
-  //final VoidCallback onSharePressed;
-
   const CustomAppBar({
     required this.context,
     super.key,
@@ -22,11 +19,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.onBookmarkPressed,
     required this.isBookmarked,
     required this.scaffoldKey,
-    required this.currentPage, // Added
-    required this.currentSourate, // Added
+    required this.currentPage, 
+    required this.currentSourate, 
     required this.onSearchPressed,
-
-    // required this.onSharePressed,
   });
 
   @override
@@ -37,13 +32,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
     return SafeArea(
       child: Container(
-        // decoration: BoxDecoration(
-        //   border: Border.all(
-        //     color: const Color.fromARGB(255, 72, 0, 253), // Change this color for debugging or styling
-        //     width: 3, // Thickness of the border
-        //   ),
-        //   borderRadius: BorderRadius.circular(12), // Optional: Rounded corners
-        // ),
         child: Directionality(
           textDirection: TextDirection.rtl,
           child: AppBar(
@@ -75,12 +63,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                     isNightMode ? AppColors.textSecondary : AppColors.primary,
                 onPressed: () => onBookmarkPressed(currentSourate, currentPage),
               ),
-              // IconButton(
-              //   icon: Icon(Icons.share),
-              //   onPressed: onSharePressed,
-              //   color:
-              //       isNightMode ? AppColors.textSecondary : AppColors.primary,
-              // ),
+              
             ],
           ),
         ),

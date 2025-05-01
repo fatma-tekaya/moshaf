@@ -3,7 +3,8 @@ import 'package:moshaf/utils/colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HistoriqueScreen extends StatefulWidget {
-  const HistoriqueScreen({super.key});
+  final bool isNightMode;
+  const HistoriqueScreen({super.key, required this.isNightMode});
 
   @override
   _HistoriqueScreenState createState() => _HistoriqueScreenState();
@@ -45,22 +46,31 @@ class _HistoriqueScreenState extends State<HistoriqueScreen> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+    final backgroundColor = widget.isNightMode ? Colors.black : Colors.white;
+    final textColor = widget.isNightMode ? Colors.white : Colors.black;
 
     return Scaffold(
+      backgroundColor: backgroundColor,
       appBar: AppBar(
         title: Text(
           'المرجعيات',
           style: TextStyle(
             fontSize: screenWidth * 0.06 > 24 ? 24 : screenWidth * 0.06,
+            color: Colors.white,
           ),
         ),
-        backgroundColor: AppColors.primary,
+        backgroundColor:
+            widget.isNightMode ? Colors.grey[900] : AppColors.primary,
       ),
       body: _savedPages.isEmpty
-          ? const Center(
+          ? Center(
               child: Text(
                 'لا توجد صفحات محفوظة',
-                style: TextStyle(fontSize: 22, fontFamily: 'almushaf'),
+                style: TextStyle(
+                  fontSize: 22,
+                  fontFamily: 'almushaf',
+                  color: textColor,
+                ),
               ),
             )
           : ListView.builder(
@@ -72,20 +82,29 @@ class _HistoriqueScreenState extends State<HistoriqueScreen> {
                 final pageNumber = parts[2];
 
                 return ListTile(
+                  tileColor: widget.isNightMode
+                      ? Colors.black
+                      : Colors.transparent,
                   title: Text(
                     surah,
                     textAlign: TextAlign.right,
-                    style: const TextStyle(
-                        fontSize: 20, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: textColor,
+                    ),
                   ),
                   subtitle: Text(
                     'صفحة ${int.parse(pageNumber) + 1}   -   $date',
                     textAlign: TextAlign.right,
-                    style: const TextStyle(fontSize: 16),
+                    style: TextStyle(fontSize: 16, color: textColor),
                   ),
-                  leading: const Icon(Icons.bookmark, color: Colors.brown),
+                  leading: Icon(Icons.bookmark,
+                      color: widget.isNightMode ? Colors.white : AppColors.primary),
                   trailing: IconButton(
-                    icon: const Icon(Icons.close, color: Colors.grey),
+                    icon: Icon(Icons.close,
+                        color:
+                            widget.isNightMode ? Colors.white : Colors.grey),
                     onPressed: () => _removeBookmark(_savedPages[index]),
                   ),
                 );
